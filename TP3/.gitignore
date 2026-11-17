@@ -1,0 +1,12 @@
+# Secrets et configuration locale
+.env
+
+# Fichiers du système / éditeur
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Sauvegardes de base
+*.dump
+sauvegarde.sql

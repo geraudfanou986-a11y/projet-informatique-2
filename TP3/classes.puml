@@ -1,0 +1,37 @@
+@startuml classes
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+class Etudiant {
+  - id : int
+  - nom : string
+  - prenom : string
+  - email : string
+}
+class DemandeStage {
+  - id : int
+  - statut : string
+  - motif_refus : string
+}
+class Entreprise {
+  - id : int
+  - nom : string
+  - ville : string
+}
+class Encadreur {
+  - id : int
+  - nom : string
+  - prenom : string
+  - email : string
+}
+class Soutenance {
+  - id : int
+  - date_heure : datetime
+  - salle : string
+}
+
+Etudiant "1" -- "1..*" DemandeStage : dépose
+DemandeStage "*" -- "1" Entreprise : concerne
+Encadreur "0..1" -- "0..*" DemandeStage : encadre
+DemandeStage "1" -- "0..1" Soutenance : programmée
+@enduml

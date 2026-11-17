@@ -1,0 +1,9 @@
+# Fins de ligne : les scripts SQL et textes restent en LF, quel que soit le poste (Windows ou Linux)
+*.sql text eol=lf
+*.puml text eol=lf
+*.md text eol=lf
+
+# Fichiers binaires
+*.png binary
+*.pdf binary
+*.docx binary

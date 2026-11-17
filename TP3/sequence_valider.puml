@@ -1,0 +1,19 @@
+@startuml sequence_valider
+skinparam shadowing false
+actor Responsable
+participant Contrôleur
+participant Service
+participant Repository
+
+Responsable -> Contrôleur : PATCH /api/demandes/7/statut
+Contrôleur -> Contrôleur : 1. authentifier (401 si session absente)
+Contrôleur -> Service : valider(7, utilisateur)
+Service -> Repository : 2. findById(7) (404 si absente)
+Repository --> Service : demande
+Service -> Service : 3. autoriser le rôle (403)
+Service -> Service : 4. transition permise ? (409)
+Service -> Repository : 5-6. UPDATE statut + INSERT historique (500 si erreur)
+Repository --> Service : ok (commit)
+Service --> Contrôleur : succès
+Contrôleur --> Responsable : 7. 200 OK
+@enduml
