@@ -1,0 +1,21 @@
+=== Route /api/sante avec base joignable
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8001
+Date: Wed, 18 Nov 2026 20:38:47 GMT
+Connection: close
+X-Powered-By: PHP/8.5.8
+Content-Type: application/json; charset=utf-8
+
+{"statut":"ok","base":"joignable"}
+
+
+=== Base rendue injoignable (DB_NAME=base_inexistante)
+HTTP/1.1 500 Internal Server Error
+Host: 127.0.0.1:8001
+Date: Wed, 18 Nov 2026 20:38:47 GMT
+Connection: close
+X-Powered-By: PHP/8.5.8
+Content-Type: application/json; charset=utf-8
+
+{"erreur":"Base de donnees indisponible"}
+

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TP4 - Squelette technique, contrat d'API et ADR-001</title>
+<style>
+  body { font-family: Calibri, "Segoe UI", Arial, sans-serif; font-size: 11pt; line-height: 1.45; color: #1b1b1b; max-width: 900px; margin: 30px auto; }
+  h1 { font-size: 20pt; margin-bottom: 2px; }
+  h2 { font-size: 14pt; margin-top: 26px; border-bottom: 1px solid #bbb; padding-bottom: 4px; }
+  h3 { font-size: 12pt; margin-top: 18px; }
+  .sub { color: #555; font-size: 10pt; margin-bottom: 22px; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 16px; font-size: 10pt; }
+  th, td { border: 1px solid #bbb; padding: 5px 7px; text-align: left; vertical-align: top; }
+  th { background: #eef2f7; }
+  pre { background: #f6f6f6; border: 1px solid #ddd; padding: 10px; font-family: Consolas, monospace; font-size: 9pt; white-space: pre-wrap; page-break-inside: avoid; }
+  code { font-family: Consolas, monospace; }
+  .note { background: #fff8e1; border-left: 4px solid #e0a800; padding: 8px 12px; margin: 12px 0; }
+  .ok { background: #eef7ee; border-left: 4px solid #3a8f3a; padding: 8px 12px; margin: 12px 0; }
+  footer { margin-top: 30px; font-size: 9pt; color: #666; border-top: 1px solid #ccc; padding-top: 8px; }
+  @media print { body { margin: 0; max-width: none; } }
+</style>
+</head>
+<body>
+
+<h1>TP4 &mdash; Squelette technique, contrat d'API et ADR-001</h1>
+<div class="sub">Projet informatique 2 &middot; L3 SIL &middot; application Web de gestion des stages et des soutenances (données fictives).</div>
+
+<div class="ok"><strong>Objectif du TP :</strong> mettre en place l'arborescence, la configuration et le premier point d'entrée. À remettre : squelette du projet, README, contrat des routes et ADR-001.</div>
+
+<h2>1. Squelette du projet et séparation des couches</h2>
+
+<pre>TP4/
+├── public/
+│   └── index.php            point d'entrée unique, routage minimal, GET /api/sante
+├── src/
+│   ├── Controllers/         requête HTTP &rarr; réponse HTTP (aucun SQL, aucune règle métier)
+│   ├── Services/            règles métier (aucun SQL, aucun HTTP)
+│   └── Repositories/        seul endroit où du SQL est écrit, requêtes préparées
+├── config/
+│   ├── config.php           lecture du .env
+│   └── database.php         fabrique PDO avec exceptions
+├── tests/
+│   └── test_connexion.php   test de connexion sans afficher le mot de passe
+├── .env.example             valeurs factices versionnées
+├── .gitignore               exclut .env, vendor/, *.log, sauvegardes
+└── README.md                prérequis, installation, commandes</pre>
+
+<p>Le point d'entrée unique <code>public/index.php</code> lit la méthode et le chemin, puis appelle le contrôleur adapté. Aucun fichier PHP n'est accessible directement hors de <code>public/</code>.</p>
+
+<h3>Connexion PDO (exceptions activées)</h3>
+
+<pre>return new PDO($dsn, $c['user'], $c['pass'], [
+    PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES =&gt; false,
+]);</pre>
+
+<div class="note"><strong>Secrets :</strong> le mot de passe est lu dans <code>.env</code>, fichier exclu par <code>.gitignore</code>. Seul <code>.env.example</code> est versionné, avec des valeurs fictives. Le test de connexion n'affiche jamais le mot de passe.</div>
+
+<h2>2. Contrat des routes</h2>
+
+<h3>Route de santé (implémentée en TP4)</h3>
+
+<table>
+<tr><th>Méthode</th><th>Chemin</th><th>Succès</th><th>Erreur</th></tr>
+<tr><td>GET</td><td><code>/api/sante</code></td><td><code>200</code> si la base est joignable</td><td><code>500</code> sinon</td></tr>
+</table>
+
+<pre>200 {"statut":"ok","base":"joignable"}
+500 {"erreur":"Base de donnees indisponible"}</pre>
+
+<p>Le détail technique est écrit dans <code>error_log</code>, jamais renvoyé au client.</p>
+
+<h3>Les trois routes métier (à respecter en TP6)</h3>
+
+<table>
+<tr><th>Méthode</th><th>Chemin</th><th>Rôle</th><th>Corps</th><th>Succès</th><th>Erreurs</th></tr>
+<tr><td>GET</td><td><code>/api/demandes</code></td><td>Responsable, secrétariat</td><td>&ndash;</td><td><code>200</code> liste</td><td><code>401</code>, <code>403</code></td></tr>
+<tr><td>POST</td><td><code>/api/demandes</code></td><td>Étudiant</td><td><code>{"entrepriseId":3}</code></td><td><code>201</code> demande créée (<code>BROUILLON</code>)</td><td><code>400</code>, <code>401</code></td></tr>
+<tr><td>PATCH</td><td><code>/api/demandes/{id}/statut</code></td><td>Responsable</td><td><code>{"statut":"VALIDEE"}</code> ou <code>{"statut":"REFUSEE","motif":"..."}</code></td><td><code>200</code> statut mis à jour</td><td><code>400</code>, <code>403</code>, <code>404</code>, <code>409</code></td></tr>
+</table>
+
+<h3>Exemple : PATCH /api/demandes/7/statut</h3>
+
+<pre>{"statut":"REFUSEE","motif":"Convention incomplete"}</pre>
+
+<table>
+<tr><th>Code</th><th>Cas</th></tr>
+<tr><td><code>200</code></td><td>Transition autorisée</td></tr>
+<tr><td><code>400</code></td><td>Motif de refus absent</td></tr>
+<tr><td><code>401</code></td><td>Session expirée</td></tr>
+<tr><td><code>403</code></td><td>Rôle insuffisant</td></tr>
+<tr><td><code>404</code></td><td>Demande inexistante</td></tr>
+<tr><td><code>409</code></td><td>Validation répétée / transition interdite</td></tr>
+<tr><td><code>500</code></td><td>Erreur serveur (message neutre)</td></tr>
+</table>
+
+<h2>3. ADR-001 &mdash; Architecture monolithe modulaire PHP</h2>
+
+<table>
+<tr><th>Champ</th><th>Contenu</th></tr>
+<tr><td><strong>Contexte</strong></td><td>Équipe de trois ou quatre étudiants, 25 heures, postes Windows, déploiement local sans infrastructure mutualisée.</td></tr>
+<tr><td><strong>Décision</strong></td><td>Monolithe modulaire PHP 8 avec PDO, sans framework, organisé en <code>public/</code>, <code>Controllers/</code>, <code>Services/</code>, <code>Repositories/</code> et <code>config/</code>.</td></tr>
+<tr><td><strong>Motif</strong></td><td>Démarrage rapide, aucune dépendance à installer, couches suffisantes pour séparer HTTP, règles métier et SQL.</td></tr>
+<tr><td><strong>Conséquence positive</strong></td><td>Déploiement simple (copier le dossier) et compréhension du code par tous les membres.</td></tr>
+<tr><td><strong>Conséquence acceptée</strong></td><td>Routage et validation écrits à la main : ils devront être couverts par des tests (TP6) et le contrôle d'accès vérifié (TP8).</td></tr>
+</table>
+
+<footer>Critères d'évaluation : séparation des couches &middot; secrets non versionnés &middot; route de santé fonctionnelle.</footer>
+
+</body>
+</html>
