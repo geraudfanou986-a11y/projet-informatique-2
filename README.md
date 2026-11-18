@@ -7,7 +7,7 @@ soutenances (données fictives uniquement).
 | | |
 |---|---|
 | **Cours** | Projet informatique 2 — L3 SIL (10 chapitres, 25 h, 10 TP) |
-| **Groupe** | Ange, Vanessa, Géraud (groupe de 3) |
+| **Groupe** | Ange, Vanessa, Géraud |
 | **Dépôt** | <https://github.com/geraudfanou986-a11y/projet-informatique-2> |
 | **Environnement** | PHP 8, MySQL ou MariaDB, Git — données fictives uniquement |
 
