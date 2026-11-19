@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Kanban - TP5</title>
+<style>
+  body { font-family: Calibri,"Segoe UI",Arial,sans-serif; margin: 24px; background:#f4f6f8; color:#222; }
+  h1 { font-size:20pt; margin:0 0 4px; }
+  .sub { color:#666; margin-bottom:18px; }
+  .board { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .col { background:#fff; border:1px solid #d5dbe2; border-radius:6px; padding:10px; min-height:230px; }
+  .col h2 { font-size:12pt; margin:0 0 10px; padding-bottom:6px; border-bottom:3px solid #6c8ebf; }
+  .card { background:#eef3fa; border:1px solid #c9d6e8; border-radius:5px; padding:9px; margin-bottom:9px; font-size:10pt; }
+  .card b { display:block; color:#2d4f7c; }
+  .time { color:#777; font-size:9pt; }
+</style>
+</head>
+<body>
+<h1>Tableau Kanban - TP5 (8 cartes)</h1>
+<div class="sub">Projet informatique 2 · L3 SIL · chaque carte &lt; 1 séance · revue du diff avant passage en « Fait »</div>
+<div class="board">
+  <div class="col"><h2>À faire</h2>
+    <div class="card"><b>K1 - Créer la table demande_stage</b><span class="time">15 min</span></div>
+    <div class="card"><b>K2 - Écrire la route GET /api/sante</b><span class="time">30 min</span></div>
+    <div class="card"><b>K3 - Rédiger le contrat des 3 routes</b><span class="time">30 min</span></div>
+  </div>
+  <div class="col"><h2>En cours</h2>
+    <div class="card"><b>K4 - Implémenter POST /api/demandes</b><span class="time">45 min</span></div>
+    <div class="card"><b>K5 - Écrire la table des transitions</b><span class="time">30 min</span></div>
+  </div>
+  <div class="col"><h2>Revue</h2>
+    <div class="card"><b>K6 - Relire le diff de feature/connexion</b><span class="time">15 min</span></div>
+  </div>
+  <div class="col"><h2>Fait</h2>
+    <div class="card"><b>K7 - Initialiser le dépôt et le README</b><span class="time">15 min</span></div>
+    <div class="card"><b>K8 - Résoudre le conflit du README et relancer les tests</b><span class="time">20 min</span></div>
+  </div>
+</div>
+</body>
+</html>

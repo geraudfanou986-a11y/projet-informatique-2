@@ -1,0 +1,41 @@
+# TP6 - Les 6 cas à tester (serveur : php -S localhost:8000 -t public)
+# Les cookies conservent la session entre les requêtes (fichier cookies.txt).
+
+### 1. Succès - connexion responsable
+POST http://localhost:8000/api/connexion
+Content-Type: application/json
+
+{"email":"sylvie.hounkpe@univ.test","motDePasse":"Responsable123!"}
+
+### 2. Succès - valider une demande (401 si session perdue)
+PATCH http://localhost:8000/api/demandes/1/statut
+Content-Type: application/json
+
+{"statut":"VALIDEE"}
+
+### 3. Erreur 400 - refus sans motif
+PATCH http://localhost:8000/api/demandes/1/statut
+Content-Type: application/json
+
+{"statut":"REFUSEE"}
+
+### 4. Erreur 401 - aucune session
+GET http://localhost:8000/api/demandes
+
+### 5. Erreur 403 - étudiant qui tente de valider
+PATCH http://localhost:8000/api/demandes/1/statut
+Content-Type: application/json
+
+{"statut":"VALIDEE"}
+
+### 6. Erreur 404 - demande inexistante
+PATCH http://localhost:8000/api/demandes/999/statut
+Content-Type: application/json
+
+{"statut":"VALIDEE"}
+
+### 7. Erreur 409 - transition interdite (VALIDEE -> REFUSEE)
+PATCH http://localhost:8000/api/demandes/1/statut
+Content-Type: application/json
+
+{"statut":"REFUSEE","motif":"Convention incomplete"}

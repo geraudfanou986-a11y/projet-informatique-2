@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion — TP7</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header><h1>Connexion</h1><a href="index.html">Accueil</a></header>
+<main>
+  <section class="carte" style="max-width:560px">
+    <h2>Identifiez-vous</h2>
+
+    <p id="raison-session" class="zone-erreur" role="status"></p>
+
+    <form id="formulaire-connexion" novalidate>
+      <label for="email">Adresse email</label>
+      <input id="email" name="email" type="email" required autocomplete="username"
+             aria-describedby="erreur-email">
+      <p id="erreur-email" class="zone-erreur" role="alert"></p>
+
+      <label for="mot-de-passe">Mot de passe</label>
+      <input id="mot-de-passe" name="motDePasse" type="password" required
+             autocomplete="current-password" aria-describedby="erreur-mot-de-passe">
+      <p id="erreur-mot-de-passe" class="zone-erreur" role="alert"></p>
+
+      <div class="actions">
+        <button type="submit">Se connecter</button>
+      </div>
+    </form>
+
+    <p id="erreur-generale" class="zone-erreur" role="alert"></p>
+    <p id="message-connexion" class="zone-succes" role="status"></p>
+  </section>
+</main>
+<footer>Les contrôles du navigateur améliorent l'ergonomie ; le serveur reste la source de vérité.</footer>
+
+<script src="js/api.js"></script>
+<script src="js/commun.js"></script>
+<script src="js/connexion.js"></script>
+</body>
+</html>

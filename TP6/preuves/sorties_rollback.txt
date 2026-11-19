@@ -1,0 +1,23 @@
+=== Avant
+id	statut
+3	BROUILLON
+nb_historique
+1
+
+=== On retire temporairement la table historique (base de test dediee)
+
+=== Appel avec table historique absente
+PATCH /api/demandes/3/statut  {"statut":"SOUMISE"}  (compte responsable)
+{"erreur":"Erreur serveur"}
+HTTP_CODE=500
+
+=== Apres echec (rollback attendu)
+id	statut
+3	BROUILLON
+
+=== Table historique restauree
+nb_historique
+1
+
+Conclusion : l'INSERT dans historique a echoue, la transaction a appele rollBack(),
+et le UPDATE du statut a ete annule. Le statut de la demande 3 est reste BROUILLON.

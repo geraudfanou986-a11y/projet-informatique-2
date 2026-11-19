@@ -1,0 +1,14 @@
+*   5b4bbea (HEAD -> main) Resout le conflit du README et relance les tests
+|\  
+| * 8495179 (feature/readme-b) Propose le titre B du README
+* | 6fe23b1 (feature/readme-a) Propose le titre A du README
+|/  
+*   60cc457 Fusionne feature/demandes apres revue
+|\  
+| * 0befd36 Ajoute POST /api/demandes
+|/  
+*   7526728 Fusionne feature/connexion apres revue
+|\  
+| * 0ec2ca8 Ajoute la connexion PDO
+|/  
+* db0d74e Initialise le depot et le README

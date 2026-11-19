@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Espace étudiant — TP7</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <h1>Espace étudiant — Mes demandes de stage</h1>
+  <button class="secondaire" id="bouton-deconnexion" type="button">Se déconnecter</button>
+</header>
+<main>
+  <section class="carte">
+    <h2>Déposer une demande</h2>
+    <form id="formulaire-demande" novalidate>
+      <label for="entreprise-id">Identifiant de l'entreprise</label>
+      <input id="entreprise-id" name="entrepriseId" type="number" min="1" step="1" required
+             aria-describedby="erreur-entreprise">
+      <p id="erreur-entreprise" class="zone-erreur" role="alert"></p>
+
+      <div class="actions">
+        <button type="submit">Envoyer la demande</button>
+        <button class="secondaire" type="button" id="bouton-rafraichir">Rafraîchir la liste</button>
+      </div>
+    </form>
+    <p id="message-demande" class="zone-succes" role="status"></p>
+    <p id="erreur-demande" class="zone-erreur" role="alert"></p>
+  </section>
+
+  <section class="carte">
+    <h2>Liste de mes demandes</h2>
+    <table>
+      <caption>Données renvoyées par GET /api/demandes/mes</caption>
+      <thead>
+        <tr><th>Identifiant</th><th>Entreprise</th><th>Statut</th><th>Détail</th></tr>
+      </thead>
+      <tbody id="corps-tableau-etudiant">
+        <tr><td colspan="4" class="vide">Chargement…</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="carte" id="detail-demande">
+    <h2>Détail de la demande</h2>
+    <p class="vide" id="detail-vide">Sélectionnez une demande dans la liste.</p>
+    <table id="tableau-detail" hidden>
+      <tbody>
+        <tr><th>Demande n°</th><td id="detail-id"></td></tr>
+        <tr><th>Entreprise n°</th><td id="detail-entreprise"></td></tr>
+        <tr><th>Statut</th><td id="detail-statut"></td></tr>
+        <tr><th>Motif de refus</th><td id="detail-motif"></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="carte">
+    <h2>Vérification du rendu sécurisé</h2>
+    <p>Saisissez une valeur contenant des balises HTML, par exemple <code>&lt;b&gt;test&lt;/b&gt;</code> ou <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>. Le texte doit s'afficher tel quel, sans mise en gras ni exécution.</p>
+    <label for="saisie-xss">Valeur à tester</label>
+    <input id="saisie-xss" type="text" value="<b>test</b>"
+           aria-describedby="erreur-xss">
+    <p id="erreur-xss" class="zone-erreur" role="alert"></p>
+    <div class="actions">
+      <button type="button" id="bouton-test-xss">Tester l'affichage</button>
+    </div>
+    <ul id="liste-xss" aria-live="polite"></ul>
+  </section>
+</main>
+<footer>Aucune donnée saisie n'est insérée avec innerHTML : le rendu passe toujours par textContent.</footer>
+
+<script src="js/api.js"></script>
+<script src="js/commun.js"></script>
+<script src="js/etudiant.js"></script>
+</body>
+</html>

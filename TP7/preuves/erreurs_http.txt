@@ -1,0 +1,41 @@
+GESTION LISIBLE DES ERREURS — TP7
+=================================
+Date : 19/11/2026
+Toutes les requêtes ci-dessous ont été observées dans l'onglet Réseau du navigateur
+(serveur réel http://127.0.0.1:8001, API du TP6 déléguée par public/router.php).
+
+400 — refus sans motif
+----------------------
+Requête : PATCH /api/demandes/5/statut  Corps : {"statut":"REFUSEE"}
+Statut HTTP observé : 400
+Réponse API : {"erreur":"Motif obligatoire pour un refus"}
+Affichage dans l'interface : « Motif obligatoire pour un refus » dans la zone
+    #erreur-motif, placée juste sous le champ « Motif du refus » (role="alert").
+=> Le message est près du champ concerné, pas une page blanche.
+
+401 — session absente
+---------------------
+Action : ouvrir responsable.html sans session, après déconnexion.
+Requête : GET /api/demandes  → 401
+Comportement : redirection automatique vers
+    connexion.html?raison=session
+Message affiché : « Votre session a expiré. Reconnectez-vous pour continuer. »
+=> La fonction appelerApi() intercepte le 401 avant tout autre affichage.
+
+403 — rôle insuffisant
+----------------------
+Action : ouvrir responsable.html avec la session de l'étudiant.
+Requête : GET /api/demandes → 403 {"erreur":"Acces interdit"}
+Affichage : « Acces interdit » dans #erreur-decision, sans page blanche.
+
+500 — erreur serveur (injection de faute réelle)
+------------------------------------------------
+Méthode : fichier TP6/.env temporaire avec un mot de passe erroné, puis clic sur
+« Rafraîchir la liste » dans responsable.html. Le fichier a été supprimé ensuite.
+Requête : GET /api/sante → 500 {"erreur":"Erreur serveur"}
+Requête : GET /api/demandes → 500
+Affichage : « Erreur serveur » dans #erreur-decision.
+=> Message neutre : aucun détail PDO, aucune pile d'exception, aucune page blanche.
+
+Résumé des codes réellement obtenus : 200, 201, 400, 401, 403, 500.
+Capture de l'état après rétablissement : preuves/capture_responsable_persistance.png

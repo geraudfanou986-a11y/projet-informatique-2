@@ -1,0 +1,62 @@
+SCÉNARIO DE BOUT EN BOUT — TP7
+==============================
+Date : 19/11/2026
+Base de test dédiée : tp7_corrige_test (supprimée après vérification)
+Serveur : php -S 127.0.0.1:8001 -t TP7/public TP7/public/router.php
+
+Étape 1 — Connexion étudiant
+----------------------------
+POST /api/connexion  {"email":"koffi.adjovi@univ.test","motDePasse":"Etudiant123!"}
+→ 200 {"connecte":true,"role":"etudiant"}
+→ redirection vers etudiant.html
+
+Étape 2 — Retrouver la liste
+----------------------------
+GET /api/demandes/mes → 200
+Lignes affichées au départ :
+    4  2  REFUSEE
+    1  1  SOUMISE
+
+Étape 3 — Créer une demande
+---------------------------
+POST /api/demandes  {"entrepriseId":2} → 201
+Message affiché : « Demande n° 5 créée avec le statut BROUILLON. »
+Nouvelles lignes après rechargement automatique de la liste :
+    5  2  BROUILLON
+    4  2  REFUSEE
+    1  1  SOUMISE
+
+Étape 4 — Connexion responsable
+-------------------------------
+POST /api/connexion  {"email":"sylvie.hounkpe@univ.test","motDePasse":"Responsable123!"}
+→ 200 {"connecte":true,"role":"responsable"}
+→ redirection vers responsable.html
+
+Étape 5 — Erreur 400 (cas d'échec)
+----------------------------------
+PATCH /api/demandes/5/statut  {"statut":"REFUSEE"} → 400
+Message affiché près du champ motif : « Motif obligatoire pour un refus »
+Aucune écriture en base.
+
+Étape 6 — Soumettre puis valider
+--------------------------------
+PATCH /api/demandes/5/statut  {"statut":"SOUMISE"} → 200
+Message : « Demande n° 5 : statut mis à jour en SOUMISE. »
+PATCH /api/demandes/5/statut  {"statut":"VALIDEE"} → 200
+Message : « Demande n° 5 : statut mis à jour en VALIDEE. »
+
+Étape 7 — Rafraîchir la page (preuve de persistance)
+----------------------------------------------------
+Touche F5 sur responsable.html, puis relecture de GET /api/demandes.
+Ligne affichée après rafraîchissement :
+    5  1  2  VALIDEE  —
+
+Vérification directe en base (PDO) :
+    {"id":5,"etudiant_id":1,"entreprise_id":2,"statut":"VALIDEE","motif_refus":null}
+Historique :
+    BROUILLON -> SOUMISE   le 2026-11-19 14:00:35
+    SOUMISE   -> VALIDEE   le 2026-11-19 14:00:35
+
+Conclusion : le nouveau statut est conservé après rafraîchissement. La persistance
+en base est prouvée, pas seulement l'affichage temporaire du navigateur.
+Capture : preuves/capture_responsable_persistance.png

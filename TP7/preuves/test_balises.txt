@@ -1,0 +1,35 @@
+TEST DU RENDU SÉCURISÉ — TP7
+============================
+Date : 19/11/2026
+Environnement : PHP 8.3, MariaDB 10.4, navigateur Chromium, serveur http://127.0.0.1:8001
+
+1. Test dans le navigateur (page etudiant.html)
+-----------------------------------------------
+Valeur saisie dans le champ « Valeur à tester » :
+    <script>alert(1)</script>
+
+Action : clic sur « Tester l'affichage » (fonction ajouterTexteDansListe, textContent).
+
+Résultat lu dans le DOM :
+    items[0] = "<script>alert(1)</script>  ← affiché avec textContent"
+    scripts  = 0        (aucun élément <script> créé dans la liste)
+    innerHTML = "&lt;script&gt;alert(1)&lt;/script&gt;  ← affiché avec textContent"
+    boîte de dialogue alert() : aucune (dialog = null)
+
+Conclusion : la balise est affichée comme du texte, elle n'est ni interprétée ni exécutée.
+Capture : preuves/capture_etudiant_xss.png
+
+2. Test complémentaire avec <b>test</b>
+---------------------------------------
+Même résultat : le texte « <b>test</b> » s'affiche tel quel, sans mise en gras.
+Le code ne contient aucun innerHTML appliqué à une donnée saisie ou reçue de l'API.
+
+3. Contrôle côté serveur (PHP 8)
+--------------------------------
+Commande : php -r 'echo htmlspecialchars("<script>alert(1)</script>", ENT_QUOTES|ENT_SUBSTITUTE, "UTF-8");'
+
+Sortie réelle :
+    <b>test</b> -> &lt;b&gt;test&lt;/b&gt;
+    <script>alert(1)</script> -> &lt;script&gt;alert(1)&lt;/script&gt;
+
+Les deux protections (textContent côté navigateur, htmlspecialchars côté serveur) sont vérifiées.

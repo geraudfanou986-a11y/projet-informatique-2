@@ -1,0 +1,9 @@
+# Projet stages
+
+<<<<<<< HEAD
+Titre version A (propose par Membre 1)
+=======
+Titre version B (propose par Membre 2)
+>>>>>>> feature/readme-b
+
+Statut : initialisation
