@@ -7,19 +7,44 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<header><h1>Projet informatique 2 — Gestion des stages</h1></header>
+<header>
+  <h1>Projet informatique 2 — Gestion des stages</h1>
+  <nav>
+    <a href="parcours.html">Parcours des rôles</a> ·
+    <a href="scenario.html">Scénario de bout en bout</a>
+  </nav>
+</header>
 <main>
   <section class="carte">
     <h2>TP7 — Interface et intégration</h2>
-    <p>Interface Web accessible reliée à l'API du TP6 : connexion, dépôt de demande, décision du responsable et rendu sécurisé des données.</p>
+    <p>Application Web accessible reliée à l'API du TP6 : inscription, connexion, dépôt de demande, décision du responsable et rendu sécurisé des données. Les listes sont relues automatiquement depuis la base.</p>
     <div class="actions">
-      <a href="connexion.html"><button>Se connecter</button></a>
-      <a href="../docs/parcours.md"><button class="secondaire">Parcours des rôles</button></a>
-      <a href="../docs/scenario_bout_en_bout.md"><button class="secondaire">Scénario de bout en bout</button></a>
+      <a class="bouton" href="connexion.html">Se connecter</a>
+      <a class="bouton secondaire" href="connexion.html?action=inscription">Créer un compte</a>
+      <a class="bouton secondaire" href="parcours.html">Parcours des rôles</a>
+      <a class="bouton secondaire" href="scenario.html">Scénario de bout en bout</a>
     </div>
   </section>
+
   <section class="carte">
-    <h2>Comptes fictifs de démonstration</h2>
+    <h2>Deux parcours, une seule application</h2>
+    <div class="grille">
+      <article>
+        <h3>Étudiant</h3>
+        <p>Créez votre compte ou connectez-vous, déposez une demande auprès d'une entreprise, suivez son statut et consultez le détail.</p>
+        <p><a href="parcours.html#etudiant">Voir le parcours étudiant</a></p>
+      </article>
+      <article>
+        <h3>Responsable</h3>
+        <p>Connectez-vous, consultez toutes les demandes, soumettez, validez ou refusez avec un motif. La liste se met à jour immédiatement.</p>
+        <p><a href="parcours.html#responsable">Voir le parcours responsable</a></p>
+      </article>
+    </div>
+  </section>
+
+  <section class="carte">
+    <h2>Comptes fictifs de démonstration (facultatifs)</h2>
+    <p>Vous pouvez aussi créer votre propre compte avec le bouton ci-dessus. Ces comptes existent uniquement pour refaire le scénario du TP rapidement.</p>
     <table>
       <caption>Rôles disponibles dans la base de test</caption>
       <thead><tr><th>Rôle</th><th>Email</th><th>Mot de passe</th></tr></thead>

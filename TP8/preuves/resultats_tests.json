@@ -1,0 +1,327 @@
+{
+    "date": "19\/11\/2026 16:51:20",
+    "serveur": "http:\/\/127.0.0.1:8001",
+    "base": "tp7_corrige_test",
+    "resultats": [
+        {
+            "numero": "1",
+            "cas": "Route de santé joignable",
+            "exigence": "ENF-01 disponibilité",
+            "donnees": "GET \/api\/sante",
+            "attendu": "200 et base joignable",
+            "observe": "HTTP 200 {\"statut\":\"ok\",\"base\":\"joignable\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "2",
+            "cas": "Inscription de l'étudiant A (compte créé)",
+            "exigence": "EF-01 inscription",
+            "donnees": "POST \/api\/inscription tp8.20261119165115.a@univ.test",
+            "attendu": "201",
+            "observe": "HTTP 201 {\"connecte\":true,\"role\":\"etudiant\",\"email\":\"tp8.20261119165115.a@univ.test\",\"etudiant_id\":12,\"message\":\"Compte créé avec succès.\",\"csrf\":\"6708ad8f5432b777b4b1b0b24821494d7e1d931b223d66f7389775cdbb4b909c\"}",
+            "conforme": "OUI",
+            "preuve": "mot de passe haché vérifié plus loin (T-15)"
+        },
+        {
+            "numero": "3",
+            "cas": "Inscription de l'étudiant B (compte créé)",
+            "exigence": "EF-01 inscription",
+            "donnees": "POST \/api\/inscription tp8.20261119165115.b@univ.test",
+            "attendu": "201",
+            "observe": "HTTP 201 {\"connecte\":true,\"role\":\"etudiant\",\"email\":\"tp8.20261119165115.b@univ.test\",\"etudiant_id\":13,\"message\":\"Compte créé avec succès.\",\"csrf\":\"490fbabfe12e70683821f59a26e141e9e5475c7c9d0693013342c03b4f905d75\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "4",
+            "cas": "Inscription avec un email déjà utilisé",
+            "exigence": "EF-01 unicité",
+            "donnees": "POST \/api\/inscription tp8.20261119165115.a@univ.test",
+            "attendu": "409",
+            "observe": "HTTP 409 {\"erreur\":\"Un compte existe déjà avec cette adresse email\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "5",
+            "cas": "Connexion avec un mot de passe faux",
+            "exigence": "ENF-02 authentification",
+            "donnees": "POST \/api\/connexion tp8.20261119165115.a@univ.test \/ mauvais",
+            "attendu": "401 sans indiquer si le compte existe",
+            "observe": "HTTP 401 {\"erreur\":\"Identifiants invalides\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "6",
+            "cas": "Connexion du responsable (compte fictif)",
+            "exigence": "ENF-02 authentification",
+            "donnees": "POST \/api\/connexion sylvie.hounkpe@univ.test",
+            "attendu": "200",
+            "observe": "HTTP 200 {\"connecte\":true,\"role\":\"responsable\",\"email\":\"sylvie.hounkpe@univ.test\",\"csrf\":\"53482e97049639f65c0301ea116ac7f774b9b3813bcbb3320b14d7a928c069a8\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "7",
+            "cas": "Jeton CSRF fourni par la session",
+            "exigence": "ENF-04 anti-CSRF",
+            "donnees": "GET \/api\/csrf",
+            "attendu": "200 avec un jeton non vide",
+            "observe": "jeton de 64 caractères",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "8",
+            "cas": "Profil de la session connectée",
+            "exigence": "EF-01 profil",
+            "donnees": "GET \/api\/moi (session A)",
+            "attendu": "200 avec email et jeton CSRF",
+            "observe": "HTTP 200 {\"id\":13,\"role\":\"etudiant\",\"etudiant_id\":12,\"email\":\"tp8.20261119165115.a@univ.test\",\"csrf\":\"6708ad8f5432b777b4b1b0b24821494d7e1d931b223d66f7389775cdbb4b909c\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "9",
+            "cas": "Dépôt d'une demande par l'étudiant A",
+            "exigence": "EF-02 dépôt",
+            "donnees": "POST \/api\/demandes {entrepriseId:1}",
+            "attendu": "201 avec statut BROUILLON",
+            "observe": "HTTP 201 {\"id\":13,\"statut\":\"BROUILLON\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "10",
+            "cas": "Écriture sans en-tête X-CSRF-Token",
+            "exigence": "ENF-04 anti-CSRF",
+            "donnees": "PATCH \/api\/demandes\/13\/statut sans jeton",
+            "attendu": "403 et aucune modification",
+            "observe": "HTTP 403 {\"erreur\":\"Jeton de sécurité absent ou invalide\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "11",
+            "cas": "Écriture avec un jeton CSRF invalide",
+            "exigence": "ENF-04 anti-CSRF",
+            "donnees": "PATCH \/api\/demandes\/13\/statut jeton invalide",
+            "attendu": "403 et aucune modification",
+            "observe": "HTTP 403 {\"erreur\":\"Jeton de sécurité absent ou invalide\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "12",
+            "cas": "Soumission de la demande (jeton valide)",
+            "exigence": "EF-03 transition",
+            "donnees": "PATCH \/api\/demandes\/13\/statut {SOUMISE}",
+            "attendu": "200 et statut SOUMISE",
+            "observe": "HTTP 200 {\"id\":13,\"statut\":\"SOUMISE\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "13",
+            "cas": "Déconnexion sans jeton CSRF",
+            "exigence": "ENF-04 anti-CSRF",
+            "donnees": "POST \/api\/deconnexion sans jeton",
+            "attendu": "403",
+            "observe": "HTTP 403 {\"erreur\":\"Jeton de sécurité absent ou invalide\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "14",
+            "cas": "T-01 Demande inexistante",
+            "exigence": "EF-03 cas limite",
+            "donnees": "PATCH \/api\/demandes\/999999\/statut {VALIDEE}",
+            "attendu": "404",
+            "observe": "HTTP 404 {\"erreur\":\"Demande introuvable\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "15",
+            "cas": "T-02 Refus sans motif",
+            "exigence": "EF-03 motif obligatoire",
+            "donnees": "PATCH \/api\/demandes\/13\/statut {REFUSEE, motif vide}",
+            "attendu": "400",
+            "observe": "HTTP 400 {\"erreur\":\"Motif obligatoire pour un refus\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "16",
+            "cas": "Validation de la demande",
+            "exigence": "EF-03 transition",
+            "donnees": "PATCH \/api\/demandes\/13\/statut {VALIDEE}",
+            "attendu": "200 et statut VALIDEE",
+            "observe": "HTTP 200 {\"id\":13,\"statut\":\"VALIDEE\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "17",
+            "cas": "T-03 Validation répétée",
+            "exigence": "EF-03 cas limite",
+            "donnees": "PATCH \/api\/demandes\/13\/statut {VALIDEE} une seconde fois",
+            "attendu": "409 et statut inchangé (VALIDEE)",
+            "observe": "HTTP 409 {\"erreur\":\"Transition interdite\"} | statut en base : VALIDEE",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "18",
+            "cas": "T-04 Date de soutenance invalide",
+            "exigence": "EF-05 cas limite",
+            "donnees": "PATCH \/api\/demandes\/13\/soutenance {2026-02-30 10:00}",
+            "attendu": "400 (date impossible au calendrier)",
+            "observe": "HTTP 400 {\"erreur\":\"Date de soutenance invalide\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "19",
+            "cas": "Soutenance valide programmée",
+            "exigence": "EF-05 programmation",
+            "donnees": "PATCH \/api\/demandes\/13\/soutenance {2026-12-11 10:00}",
+            "attendu": "200 avec date enregistrée",
+            "observe": "HTTP 200 {\"id\":4,\"demande_id\":13,\"date_heure\":\"2026-12-11 10:00:00\",\"salle\":\"B12\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "20",
+            "cas": "Soutenance refusée sur une demande non validée",
+            "exigence": "EF-05 règle métier",
+            "donnees": "PATCH \/api\/demandes\/14\/soutenance (demande BROUILLON)",
+            "attendu": "409",
+            "observe": "HTTP 409 {\"erreur\":\"Seule une demande validée peut recevoir une soutenance\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "21",
+            "cas": "Étudiant B lit le dossier de l'étudiant A",
+            "exigence": "ENF-03 autorisation",
+            "donnees": "GET \/api\/demandes\/13 (session B)",
+            "attendu": "403 sans aucune donnée",
+            "observe": "HTTP 403 {\"erreur\":\"Cette demande ne vous est pas accessible\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "22",
+            "cas": "Étudiant A lit sa propre demande",
+            "exigence": "ENF-03 autorisation",
+            "donnees": "GET \/api\/demandes\/13 (session A)",
+            "attendu": "200",
+            "observe": "HTTP 200 {\"id\":13,\"etudiant_id\":12,\"entreprise_id\":1,\"encadreur_id\":null,\"statut\":\"VALIDEE\",\"motif_refus\":null}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "23",
+            "cas": "Le responsable lit n'importe quelle demande",
+            "exigence": "ENF-03 autorisation",
+            "donnees": "GET \/api\/demandes\/13 (session responsable)",
+            "attendu": "200",
+            "observe": "HTTP 200 {\"id\":13,\"etudiant_id\":12,\"entreprise_id\":1,\"encadreur_id\":null,\"statut\":\"VALIDEE\",\"motif_refus\":null}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "24",
+            "cas": "Étudiant sur la liste du personnel",
+            "exigence": "ENF-03 autorisation",
+            "donnees": "GET \/api\/demandes (session A)",
+            "attendu": "403",
+            "observe": "HTTP 403 {\"erreur\":\"Acces interdit\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "25",
+            "cas": "Accès sans session",
+            "exigence": "ENF-02 authentification",
+            "donnees": "GET \/api\/demandes sans cookie de session",
+            "attendu": "401",
+            "observe": "HTTP 401 {\"erreur\":\"Non authentifie\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "26",
+            "cas": "La liste « mes demandes » de B ne contient pas la demande de A",
+            "exigence": "ENF-03 cloisonnement",
+            "donnees": "GET \/api\/demandes\/mes (session B)",
+            "attendu": "200 sans la demande de A",
+            "observe": "demande A présente : non",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "27",
+            "cas": "Injection « 1 OR 1=1 » dans l'URL",
+            "exigence": "ENF-05 injection SQL",
+            "donnees": "GET \/api\/demandes\/1 OR 1=1",
+            "attendu": "404 (aucune route, aucune fuite)",
+            "observe": "HTTP 404 {\"erreur\":\"Route inconnue\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "28",
+            "cas": "Injection « 1 OR 1=1 » dans le corps JSON",
+            "exigence": "ENF-05 injection SQL",
+            "donnees": "POST \/api\/demandes {entrepriseId:\"1 OR 1=1\"}",
+            "attendu": "400, aucune ligne créée",
+            "observe": "HTTP 400 {\"erreur\":\"Entreprise invalide\"} | demandes avant\/après : 2\/2",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "29",
+            "cas": "Dépôt avec une entreprise inexistante",
+            "exigence": "EF-02 validation",
+            "donnees": "POST \/api\/demandes {entrepriseId:999999}",
+            "attendu": "400",
+            "observe": "HTTP 400 {\"erreur\":\"Entreprise introuvable\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "30",
+            "cas": "Route inconnue",
+            "exigence": "ENF-06 robustesse",
+            "donnees": "GET \/api\/inconnu",
+            "attendu": "404",
+            "observe": "HTTP 404 {\"erreur\":\"Route inconnue\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "31",
+            "cas": "Détail d'une demande inexistante",
+            "exigence": "EF-03 cas limite",
+            "donnees": "GET \/api\/demandes\/999999",
+            "attendu": "404",
+            "observe": "HTTP 404 {\"erreur\":\"Demande introuvable\"}",
+            "conforme": "OUI",
+            "preuve": ""
+        },
+        {
+            "numero": "32",
+            "cas": "Mot de passe stocké haché (bcrypt)",
+            "exigence": "ENF-06 confidentialité",
+            "donnees": "SELECT hash FROM utilisateur WHERE email = tp8.20261119165115.a@univ.test",
+            "attendu": "hash bcrypt ($2y$), password_verify() vrai, jamais le mot de passe en clair",
+            "observe": "algorithme $2y$, longueur 60, identique au mot de passe : non",
+            "conforme": "OUI",
+            "preuve": ""
+        }
+    ]
+}

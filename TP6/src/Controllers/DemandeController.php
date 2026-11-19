@@ -13,6 +13,13 @@ final class DemandeController
     ) {
     }
 
+    /** Liste des entreprises pour le formulaire de dépôt (utilisateur authentifié). */
+    public function entreprises(): never
+    {
+        $this->auth->utilisateur();
+        repondre(200, $this->service->entreprises());
+    }
+
     public function lister(): never
     {
         $this->auth->exigeRole(['responsable', 'secretariat']);
@@ -22,17 +29,44 @@ final class DemandeController
     public function listerMesDemandes(): never
     {
         $u = $this->auth->exigeRole(['etudiant']);
-        repondre(200, $this->service->listerPourEtudiant($u['id']));
+        if ($u['etudiant_id'] === null) {
+            throw new HttpException(403, 'Aucune fiche étudiant liée à ce compte');
+        }
+        repondre(200, $this->service->listerPourEtudiant($u['etudiant_id']));
+    }
+
+    /** Détail d'une demande : le service applique le contrôle d'accès par rôle. */
+    public function detail(int $id): never
+    {
+        $u = $this->auth->utilisateur();
+        repondre(200, $this->service->detail($id, $u));
+    }
+
+    /** Programmation d'une soutenance (personnel uniquement). */
+    public function programmerSoutenance(int $id): never
+    {
+        $u = $this->auth->exigeRole(['responsable', 'secretariat']);
+        $corps = lireCorps();
+        $soutenance = $this->service->programmerSoutenance(
+            $id,
+            $corps['dateHeure'] ?? null,
+            $corps['salle'] ?? null,
+            $u
+        );
+        repondre(200, $soutenance);
     }
 
     public function creer(): never
     {
         $u = $this->auth->exigeRole(['etudiant']);
+        if ($u['etudiant_id'] === null) {
+            throw new HttpException(403, 'Aucune fiche étudiant liée à ce compte');
+        }
         $corps = lireCorps();
         if (!array_key_exists('entrepriseId', $corps)) {
             throw new HttpException(400, 'Entreprise invalide');
         }
-        $demande = $this->service->creer($u['id'], $corps['entrepriseId']);
+        $demande = $this->service->creer($u['etudiant_id'], $corps['entrepriseId']);
         repondre(201, $demande);
     }
 

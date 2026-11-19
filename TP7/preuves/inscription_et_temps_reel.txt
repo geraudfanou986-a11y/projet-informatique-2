@@ -1,0 +1,73 @@
+INSCRIPTION ET MISE À JOUR EN TEMPS RÉEL — TP7
+===============================================
+Date : 19/11/2026
+Serveur : http://127.0.0.1:8001 (serveur PHP lancé depuis VS Code)
+Base : tp7_corrige_test sur MariaDB port 3307
+
+1. Inscription d'un visiteur (nouveau)
+--------------------------------------
+Formulaire « Créer un compte » de connexion.html :
+    Nom KOUASSI, prénom Awa
+    Email demo.pro.20261119@univ.test
+    Rôle etudiant, mot de passe MotDePasse123!
+
+Requête : POST /api/inscription → 201
+Session ouverte automatiquement, redirection vers etudiant.html.
+Profil affiché dans l'en-tête : « demo.pro.20261119@univ.test · Étudiant ».
+
+Vérification directe en base :
+    utilisateur id=4, email=demo.pro.20261119@univ.test, role=etudiant,
+    hash commence par $2y$12$ et fait 60 caractères (bcrypt, jamais de clair).
+    etudiant id=4, nom=KOUASSI, prenom=Awa, email=demo.pro.20261119@univ.test.
+
+Conséquence : le compte est bien relié à sa fiche étudiant (id 4), donc ses
+demandes sont enregistrées avec etudiant_id = 4 et apparaissent dans
+GET /api/demandes/mes.
+
+2. Email déjà utilisé
+---------------------
+Nouvelle tentative d'inscription avec le même email → 409
+Message affiché sous le champ email : « Un compte existe déjà avec cette adresse email ».
+Le contrôle couvre aussi les adresses du jeu d'essai présentes dans la table
+`etudiant` sans compte `utilisateur` (ex. aicha.bello@univ.test) → 409, pas 500.
+
+3. Dépôt de demande depuis le nouveau compte
+--------------------------------------------
+Liste déroulante d'entreprises chargée par GET /api/entreprises :
+    Atelier Numerique — Porto-Novo
+    Reseau Plus — Cotonou
+Choix de « Reseau Plus » puis clic sur « Envoyer la demande »
+→ POST /api/demandes 201
+→ « Demande n° 6 créée avec le statut BROUILLON. »
+→ ligne affichée : 6 | Reseau Plus (n° 2) | BROUILLON | Voir détail
+
+4. Décision du responsable et mise à jour immédiate
+---------------------------------------------------
+Connexion responsable (sylvie.hounkpe@univ.test) → GET /api/demandes 200.
+Action rapide « Soumettre » sur la demande 6 :
+    PATCH /api/demandes/6/statut {"statut":"SOUMISE"} → 200
+    Message : « Demande n° 6 : statut mis à jour en SOUMISE. La liste a été relue depuis la base. »
+    Notification : « Demande n° 6 : BROUILLON → SOUMISE. » (ligne surlignée)
+Action rapide « Valider » :
+    PATCH /api/demandes/6/statut {"statut":"VALIDEE"} → 200
+    Notification : « Demande n° 6 : SOUMISE → VALIDEE. »
+    Ligne immédiate : 6 | 4 | 2 | VALIDEE | — | Aucune action
+
+La liste est relue automatiquement par GET /api/demandes toutes les 15 s
+(requêtes observées dans l'onglet Réseau) et à chaque retour sur l'onglet.
+
+5. Retour côté étudiant
+-----------------------
+Après reconnexion avec le compte créé :
+    GET /api/demandes/mes → 200
+    Ligne affichée : 6 | Reseau Plus (n° 2) | VALIDEE | Voir détail
+Le statut validé par le responsable est donc bien visible par l'étudiant.
+
+Attention : les onglets d'un même navigateur partagent PHPSESSID. Pour suivre
+les deux rôles en direct, utiliser deux navigateurs ou une fenêtre privée.
+
+6. Erreur 400 conservée
+-----------------------
+Responsable, demande 5, décision « Refuser » sans motif :
+    PATCH /api/demandes/5/statut {"statut":"REFUSEE"} → 400
+    Message sous le champ motif : « Motif obligatoire pour un refus ».

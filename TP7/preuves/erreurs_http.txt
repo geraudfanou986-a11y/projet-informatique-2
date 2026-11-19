@@ -37,5 +37,11 @@ Requête : GET /api/demandes → 500
 Affichage : « Erreur serveur » dans #erreur-decision.
 => Message neutre : aucun détail PDO, aucune pile d'exception, aucune page blanche.
 
-Résumé des codes réellement obtenus : 200, 201, 400, 401, 403, 500.
+409 — email déjà inscrit
+-------------------------
+Requête : POST /api/inscription avec une adresse déjà utilisée → 409
+Réponse API : {"erreur":"Un compte existe déjà avec cette adresse email"}
+Affichage : message sous le champ « Adresse email » du formulaire d'inscription.
+
+Résumé des codes réellement obtenus : 200, 201, 400, 401, 403, 409, 500.
 Capture de l'état après rétablissement : preuves/capture_responsable_persistance.png

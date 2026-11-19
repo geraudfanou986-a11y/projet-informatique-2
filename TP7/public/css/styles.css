@@ -31,6 +31,9 @@ header {
 
 header h1 { font-size: 1.1rem; margin: 0; }
 header a { color: #fff; }
+header .profil { margin: 2px 0 0; font-size: 0.82rem; opacity: 0.85; }
+header nav button.secondaire { background: transparent; color: #fff; border-color: #fff; padding: 4px 10px; }
+header nav button.secondaire:hover { background: rgba(255,255,255,0.15); }
 
 main {
   max-width: 960px;
@@ -129,7 +132,99 @@ code { background: #eef2f7; padding: 1px 4px; border-radius: 3px; }
 
 footer { max-width: 960px; margin: 0 auto 30px; padding: 0 20px; font-size: 0.85rem; color: #667; }
 
+/* Navigation et liens boutons */
+header nav { font-size: 0.9rem; }
+header nav a { text-decoration: underline; }
+
+a.bouton {
+  display: inline-block;
+  width: auto;
+  padding: 9px 14px;
+  margin: 0;
+  border: 1px solid var(--bleu);
+  border-radius: 5px;
+  background: var(--bleu);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+a.bouton:hover { background: #123852; }
+a.bouton.secondaire { background: #fff; color: var(--bleu); }
+main a:not(.bouton) { color: var(--bleu); }
+
+/* Onglets connexion / inscription */
+.onglets {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--bordure);
+  margin-bottom: 18px;
+}
+.onglet {
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #667;
+  padding: 8px 12px;
+  margin: 0;
+  max-width: none;
+}
+.onglet.actif {
+  color: var(--bleu);
+  border-bottom-color: var(--bleu);
+  font-weight: 700;
+}
+
+/* Pages documentaires et grilles */
+.grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.grille article { background: var(--bleu-clair); border-radius: 6px; padding: 14px; }
+.grille h3 { margin-top: 0; color: var(--bleu); }
+.chemin { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0 0 14px; }
+.chemin li {
+  background: var(--bleu-clair);
+  border: 1px solid var(--bordure);
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 0.9rem;
+}
+.sortie {
+  background: #1d2733;
+  color: #eef2f7;
+  padding: 14px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+}
+
+/* Suivi en temps réel des listes */
+.suivi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: #445;
+}
+.suivi label { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-weight: 500; }
+.suivi input[type="checkbox"] { width: 16px; height: 16px; margin: 0; }
+.notification {
+  background: #fff8dc;
+  border-left: 4px solid #c99a00;
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin: 10px 0 0;
+  font-weight: 600;
+}
+tr.ligne-modifiee { animation: surlignage 2.5s ease-out; }
+@keyframes surlignage {
+  from { background: #fff2a8; }
+  to { background: transparent; }
+}
+.badge.soumise { background: #fff3cd; color: #7a5b00; }
+
 @media (max-width: 600px) {
   header { flex-direction: column; align-items: flex-start; }
   input, select, textarea { max-width: 100%; }
+  .onglets { flex-direction: column; }
 }

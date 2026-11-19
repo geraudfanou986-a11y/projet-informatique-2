@@ -1,6 +1,14 @@
 'use strict';
 
 const corpsTableau = document.getElementById('corps-tableau-etudiant');
+const nomsEntreprises = new Map();
+const statutsConnus = new Map();
+let demandeSelectionnee = null;
+
+function libelleEntreprise(demande) {
+  const nom = nomsEntreprises.get(Number(demande.entreprise_id));
+  return nom ? `${nom} (n° ${demande.entreprise_id})` : `Entreprise n° ${demande.entreprise_id}`;
+}
 
 /** Remplace tout le contenu du tableau par des nœuds texte (jamais innerHTML). */
 function rendreListe(demandes) {
@@ -17,6 +25,9 @@ function rendreListe(demandes) {
     return;
   }
 
+  const premiereLecture = statutsConnus.size === 0;
+  const changements = [];
+
   demandes.forEach((demande) => {
     const ligne = document.createElement('tr');
 
@@ -24,7 +35,7 @@ function rendreListe(demandes) {
     celluleId.textContent = String(demande.id);
 
     const celluleEntreprise = document.createElement('td');
-    celluleEntreprise.textContent = String(demande.entreprise_id);
+    celluleEntreprise.textContent = libelleEntreprise(demande);
 
     const celluleStatut = document.createElement('td');
     celluleStatut.appendChild(badgeStatut(String(demande.statut)));
@@ -38,16 +49,38 @@ function rendreListe(demandes) {
     celluleAction.appendChild(bouton);
 
     ligne.append(celluleId, celluleEntreprise, celluleStatut, celluleAction);
+
+    // Un changement de statut détecté par l'actualisation automatique est visible.
+    const avant = statutsConnus.get(demande.id);
+    if (!premiereLecture && avant !== undefined && avant !== demande.statut) {
+      ligne.classList.add('ligne-modifiee');
+      changements.push(`Votre demande n° ${demande.id} est passée en ${demande.statut}.`);
+    }
+    statutsConnus.set(demande.id, demande.statut);
+
     corpsTableau.appendChild(ligne);
   });
+
+  if (changements.length) {
+    afficherNotification('notification-etudiant', changements.join(' '));
+  }
+
+  // Le détail ouvert reste synchronisé avec la base.
+  if (demandeSelectionnee !== null) {
+    const miseAJour = demandes.find((d) => d.id === demandeSelectionnee);
+    if (miseAJour) {
+      afficherDetail(miseAJour);
+    }
+  }
 }
 
 /** Quatrième écran du parcours étudiant : le détail d'une demande. */
 function afficherDetail(demande) {
+  demandeSelectionnee = demande.id;
   document.getElementById('detail-vide').hidden = true;
   document.getElementById('tableau-detail').hidden = false;
   document.getElementById('detail-id').textContent = String(demande.id);
-  document.getElementById('detail-entreprise').textContent = String(demande.entreprise_id);
+  document.getElementById('detail-entreprise').textContent = libelleEntreprise(demande);
   document.getElementById('detail-statut').textContent = String(demande.statut);
   document.getElementById('detail-motif').textContent = demande.motif_refus
     ? String(demande.motif_refus)
@@ -58,9 +91,33 @@ async function chargerListe() {
   try {
     const demandes = await appelerApi('/api/demandes/mes');
     rendreListe(demandes);
+    marquerMiseAJour('maj-etudiant');
   } catch (e) {
     afficherErreur('erreur-demande', messageErreur(e));
     rendreListe([]);
+  }
+}
+
+async function chargerEntreprises() {
+  const select = document.getElementById('entreprise-id');
+  try {
+    const entreprises = await appelerApi('/api/entreprises');
+    select.replaceChildren();
+    const invitation = document.createElement('option');
+    invitation.value = '';
+    invitation.textContent = '— Choisir une entreprise —';
+    select.appendChild(invitation);
+    entreprises.forEach((entreprise) => {
+      nomsEntreprises.set(Number(entreprise.id), entreprise.nom);
+      const option = document.createElement('option');
+      option.value = String(entreprise.id);
+      option.textContent = entreprise.ville
+        ? `${entreprise.nom} — ${entreprise.ville}`
+        : entreprise.nom;
+      select.appendChild(option);
+    });
+  } catch (e) {
+    afficherErreur('erreur-entreprise', messageErreur(e));
   }
 }
 
@@ -68,11 +125,10 @@ document.getElementById('formulaire-demande').addEventListener('submit', async (
   evenement.preventDefault();
   effacerMessages(['erreur-entreprise', 'erreur-demande', 'message-demande']);
 
-  const valeur = document.getElementById('entreprise-id').value.trim();
-  const entrepriseId = Number(valeur);
+  const entrepriseId = Number(document.getElementById('entreprise-id').value);
 
-  if (!valeur || !Number.isInteger(entrepriseId) || entrepriseId < 1) {
-    afficherErreur('erreur-entreprise', 'Saisissez un identifiant d’entreprise entier positif.');
+  if (!Number.isInteger(entrepriseId) || entrepriseId < 1) {
+    afficherErreur('erreur-entreprise', 'Choisissez une entreprise dans la liste.');
     document.getElementById('entreprise-id').focus();
     return;
   }
@@ -112,4 +168,6 @@ document.getElementById('bouton-test-xss').addEventListener('click', () => {
 
 document.getElementById('bouton-deconnexion').addEventListener('click', deconnecter);
 
-chargerListe();
+chargerProfil();
+chargerEntreprises().then(chargerListe);
+installerActualisationAuto({ checkboxId: 'auto-etudiant', charger: chargerListe });

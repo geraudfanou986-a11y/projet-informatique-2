@@ -22,6 +22,7 @@ soutenances (données fictives uniquement).
 | `TP5/` | Organisation Git : kanban, conventions de branches, conflit résolu et sortie de `git log --graph` |
 | `TP6/` | API réelle des demandes : contrôleurs, services, repositories, authentification et preuves HTTP |
 | `TP7/` | Interface accessible reliée à l'API, parcours des rôles, test XSS et scénario de bout en bout |
+| `TP8/` | Plan de tests exécuté, quatre cas limites, audit de sécurité (hachage, CSRF) et fiche de revue de code |
 
 ## Branches
 
@@ -30,7 +31,7 @@ fusionnées après relecture du diff. Les livrables actuellement présents sont 
 
 | Branche | Contenu |
 |---|---|
-| `main` | Squelette du dépôt et livrables `TD1`, `TD2`, `TP3`, `TP4`, `TP5`, `TP6`, `TP7` |
+| `main` | Squelette du dépôt et livrables `TD1`, `TD2`, `TP3`, `TP4`, `TP5`, `TP6`, `TP7`, `TP8` |
 
 ## Périmètre retenu (v1)
 
@@ -52,7 +53,9 @@ convention signée électroniquement, messagerie interne.
 | TP5 | Dépôt Git et organisation d'équipe | Fait |
 | TP6 | API des demandes | Fait |
 | TP7 | Interface et intégration | Fait |
-| TP8 à TP10 | Plan de tests, audit de sécurité, synthèse | À venir |
+| TP8 | Plan de tests et audit de sécurité | Fait |
+| TP9 | Déploiement et sauvegarde | À venir |
+| TP10 | Dossier de livraison et soutenance | À venir |
 
 ## Démarrage rapide
 

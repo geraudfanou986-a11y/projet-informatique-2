@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parcours des rôles — TP7</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <h1>Parcours des rôles — TP7</h1>
+  <nav><a href="index.html">Accueil</a> · <a href="scenario.html">Scénario de bout en bout</a></nav>
+</header>
+<main>
+  <section class="carte">
+    <h2>Deux parcours dessinés avant le codage</h2>
+    <p>Cette page présente les écrans prévus au chapitre 7. Le schéma visuel est aussi disponible dans le dossier <code>docs/parcours.svg</code> du projet.</p>
+    <div class="actions">
+      <a class="bouton secondaire" href="#etudiant">Parcours étudiant</a>
+      <a class="bouton secondaire" href="#responsable">Parcours responsable</a>
+    </div>
+  </section>
+
+  <section class="carte" id="etudiant">
+    <h2>Parcours étudiant — 4 écrans</h2>
+    <ol class="chemin">
+      <li>Connexion</li>
+      <li>Mes demandes</li>
+      <li>Formulaire de dépôt</li>
+      <li>Détail d'une demande</li>
+    </ol>
+    <table>
+      <caption>Écrans, actions et appels API</caption>
+      <thead><tr><th>Écran</th><th>Action utilisateur</th><th>Appel / résultat</th></tr></thead>
+      <tbody>
+        <tr><td>1. <code>connexion.html</code></td><td>Saisir email + mot de passe, ou créer un compte</td><td><code>POST /api/connexion</code> ou <code>POST /api/inscription</code> → redirection vers <code>etudiant.html</code></td></tr>
+        <tr><td>2. <code>etudiant.html</code> (liste)</td><td>Arrivée sur la page, rafraîchissement automatique toutes les 15 s</td><td><code>GET /api/demandes/mes</code> → tableau des demandes</td></tr>
+        <tr><td>3. <code>etudiant.html</code> (dépôt)</td><td>Choisir une entreprise dans la liste, envoyer</td><td><code>POST /api/demandes</code> → <code>201</code>, puis relecture de la liste</td></tr>
+        <tr><td>4. <code>etudiant.html</code> (détail)</td><td>Cliquer sur « Voir détail »</td><td>Affichage de l'id, de l'entreprise, du statut et du motif avec <code>textContent</code></td></tr>
+      </tbody>
+    </table>
+    <p>Zone transverse : le formulaire de vérification du rendu sécurisé permet de saisir <code>&lt;b&gt;test&lt;/b&gt;</code> et de constater que les balises s'affichent telles quelles, sans être interprétées.</p>
+  </section>
+
+  <section class="carte" id="responsable">
+    <h2>Parcours responsable — 3 écrans</h2>
+    <ol class="chemin">
+      <li>Connexion</li>
+      <li>Liste des demandes à traiter</li>
+      <li>Décision : soumettre / valider / refuser</li>
+    </ol>
+    <table>
+      <caption>Écrans, actions et appels API</caption>
+      <thead><tr><th>Écran</th><th>Action utilisateur</th><th>Appel / résultat</th></tr></thead>
+      <tbody>
+        <tr><td>1. <code>connexion.html</code></td><td>Saisir les identifiants responsable</td><td><code>POST /api/connexion</code> → redirection vers <code>responsable.html</code></td></tr>
+        <tr><td>2. <code>responsable.html</code> (liste)</td><td>Arrivée, clic sur « Rafraîchir » ou actualisation automatique</td><td><code>GET /api/demandes</code> → tableau reçu de la base</td></tr>
+        <tr><td>3. <code>responsable.html</code> (décision)</td><td>Choisir un statut, saisir un motif si refus, enregistrer</td><td><code>PATCH /api/demandes/{id}/statut</code> → <code>200</code>, puis relecture immédiate de la liste</td></tr>
+      </tbody>
+    </table>
+    <p>La transition suit l'ordre métier : <code>BROUILLON → SOUMISE → VALIDEE</code>. Un refus sans motif renvoie <code>400</code> et le message s'affiche sous le champ prévu à cet effet.</p>
+  </section>
+
+  <section class="carte">
+    <h2>Choix d'interface</h2>
+    <ul>
+      <li>Une seule page par rôle, avec des sections correspondant aux écrans du parcours : moins d'allers-retours, mais des sections clairement titrées.</li>
+      <li>Un bouton « Rafraîchir » explicite, complété par une actualisation automatique : les données affichées reviennent toujours de la base.</li>
+      <li>Aucun lien direct vers les routes API : tout passe par <code>fetch</code> dans <code>public/js/api.js</code>.</li>
+    </ul>
+    <p><a class="bouton" href="connexion.html">Mettre en pratique</a></p>
+  </section>
+</main>
+<footer>Données fictives uniquement · TP7 · L3 SIL</footer>
+</body>
+</html>

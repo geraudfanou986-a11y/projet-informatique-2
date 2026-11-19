@@ -1,0 +1,42 @@
+TP8 - PLAN DE TESTS ET AUDIT DE SÉCURITÉ
+=========================================
+Date d'exécution : 19/11/2026 16:51:20
+Serveur : http://127.0.0.1:8001
+Base : tp7_corrige_test (port 3307)
+Résultat : 32/32 cas conformes
+Nettoyage : comptes et demandes de test supprimés
+
+| # | Cas | Exigence | Données | Attendu | Observé | Conforme |
+|---|-----|----------|---------|---------|---------|----------|
+| 1 | Route de santé joignable | ENF-01 disponibilité | GET /api/sante | 200 et base joignable | HTTP 200 {"statut":"ok","base":"joignable"} | OUI |
+| 2 | Inscription de l'étudiant A (compte créé) | EF-01 inscription | POST /api/inscription tp8.20261119165115.a@univ.test | 201 | HTTP 201 {"connecte":true,"role":"etudiant","email":"tp8.20261119165115.a@univ.test","etudiant_id":12,"message":"Compte créé avec succès.","csrf":"6708ad8f5432b777b4b1b0b24821494d7e1d931b223d66f7389775cdbb4b909c"} | OUI |
+| 3 | Inscription de l'étudiant B (compte créé) | EF-01 inscription | POST /api/inscription tp8.20261119165115.b@univ.test | 201 | HTTP 201 {"connecte":true,"role":"etudiant","email":"tp8.20261119165115.b@univ.test","etudiant_id":13,"message":"Compte créé avec succès.","csrf":"490fbabfe12e70683821f59a26e141e9e5475c7c9d0693013342c03b4f905d75"} | OUI |
+| 4 | Inscription avec un email déjà utilisé | EF-01 unicité | POST /api/inscription tp8.20261119165115.a@univ.test | 409 | HTTP 409 {"erreur":"Un compte existe déjà avec cette adresse email"} | OUI |
+| 5 | Connexion avec un mot de passe faux | ENF-02 authentification | POST /api/connexion tp8.20261119165115.a@univ.test / mauvais | 401 sans indiquer si le compte existe | HTTP 401 {"erreur":"Identifiants invalides"} | OUI |
+| 6 | Connexion du responsable (compte fictif) | ENF-02 authentification | POST /api/connexion sylvie.hounkpe@univ.test | 200 | HTTP 200 {"connecte":true,"role":"responsable","email":"sylvie.hounkpe@univ.test","csrf":"53482e97049639f65c0301ea116ac7f774b9b3813bcbb3320b14d7a928c069a8"} | OUI |
+| 7 | Jeton CSRF fourni par la session | ENF-04 anti-CSRF | GET /api/csrf | 200 avec un jeton non vide | jeton de 64 caractères | OUI |
+| 8 | Profil de la session connectée | EF-01 profil | GET /api/moi (session A) | 200 avec email et jeton CSRF | HTTP 200 {"id":13,"role":"etudiant","etudiant_id":12,"email":"tp8.20261119165115.a@univ.test","csrf":"6708ad8f5432b777b4b1b0b24821494d7e1d931b223d66f7389775cdbb4b909c"} | OUI |
+| 9 | Dépôt d'une demande par l'étudiant A | EF-02 dépôt | POST /api/demandes {entrepriseId:1} | 201 avec statut BROUILLON | HTTP 201 {"id":13,"statut":"BROUILLON"} | OUI |
+| 10 | Écriture sans en-tête X-CSRF-Token | ENF-04 anti-CSRF | PATCH /api/demandes/13/statut sans jeton | 403 et aucune modification | HTTP 403 {"erreur":"Jeton de sécurité absent ou invalide"} | OUI |
+| 11 | Écriture avec un jeton CSRF invalide | ENF-04 anti-CSRF | PATCH /api/demandes/13/statut jeton invalide | 403 et aucune modification | HTTP 403 {"erreur":"Jeton de sécurité absent ou invalide"} | OUI |
+| 12 | Soumission de la demande (jeton valide) | EF-03 transition | PATCH /api/demandes/13/statut {SOUMISE} | 200 et statut SOUMISE | HTTP 200 {"id":13,"statut":"SOUMISE"} | OUI |
+| 13 | Déconnexion sans jeton CSRF | ENF-04 anti-CSRF | POST /api/deconnexion sans jeton | 403 | HTTP 403 {"erreur":"Jeton de sécurité absent ou invalide"} | OUI |
+| 14 | T-01 Demande inexistante | EF-03 cas limite | PATCH /api/demandes/999999/statut {VALIDEE} | 404 | HTTP 404 {"erreur":"Demande introuvable"} | OUI |
+| 15 | T-02 Refus sans motif | EF-03 motif obligatoire | PATCH /api/demandes/13/statut {REFUSEE, motif vide} | 400 | HTTP 400 {"erreur":"Motif obligatoire pour un refus"} | OUI |
+| 16 | Validation de la demande | EF-03 transition | PATCH /api/demandes/13/statut {VALIDEE} | 200 et statut VALIDEE | HTTP 200 {"id":13,"statut":"VALIDEE"} | OUI |
+| 17 | T-03 Validation répétée | EF-03 cas limite | PATCH /api/demandes/13/statut {VALIDEE} une seconde fois | 409 et statut inchangé (VALIDEE) | HTTP 409 {"erreur":"Transition interdite"} \| statut en base : VALIDEE | OUI |
+| 18 | T-04 Date de soutenance invalide | EF-05 cas limite | PATCH /api/demandes/13/soutenance {2026-02-30 10:00} | 400 (date impossible au calendrier) | HTTP 400 {"erreur":"Date de soutenance invalide"} | OUI |
+| 19 | Soutenance valide programmée | EF-05 programmation | PATCH /api/demandes/13/soutenance {2026-12-11 10:00} | 200 avec date enregistrée | HTTP 200 {"id":4,"demande_id":13,"date_heure":"2026-12-11 10:00:00","salle":"B12"} | OUI |
+| 20 | Soutenance refusée sur une demande non validée | EF-05 règle métier | PATCH /api/demandes/14/soutenance (demande BROUILLON) | 409 | HTTP 409 {"erreur":"Seule une demande validée peut recevoir une soutenance"} | OUI |
+| 21 | Étudiant B lit le dossier de l'étudiant A | ENF-03 autorisation | GET /api/demandes/13 (session B) | 403 sans aucune donnée | HTTP 403 {"erreur":"Cette demande ne vous est pas accessible"} | OUI |
+| 22 | Étudiant A lit sa propre demande | ENF-03 autorisation | GET /api/demandes/13 (session A) | 200 | HTTP 200 {"id":13,"etudiant_id":12,"entreprise_id":1,"encadreur_id":null,"statut":"VALIDEE","motif_refus":null} | OUI |
+| 23 | Le responsable lit n'importe quelle demande | ENF-03 autorisation | GET /api/demandes/13 (session responsable) | 200 | HTTP 200 {"id":13,"etudiant_id":12,"entreprise_id":1,"encadreur_id":null,"statut":"VALIDEE","motif_refus":null} | OUI |
+| 24 | Étudiant sur la liste du personnel | ENF-03 autorisation | GET /api/demandes (session A) | 403 | HTTP 403 {"erreur":"Acces interdit"} | OUI |
+| 25 | Accès sans session | ENF-02 authentification | GET /api/demandes sans cookie de session | 401 | HTTP 401 {"erreur":"Non authentifie"} | OUI |
+| 26 | La liste « mes demandes » de B ne contient pas la demande de A | ENF-03 cloisonnement | GET /api/demandes/mes (session B) | 200 sans la demande de A | demande A présente : non | OUI |
+| 27 | Injection « 1 OR 1=1 » dans l'URL | ENF-05 injection SQL | GET /api/demandes/1 OR 1=1 | 404 (aucune route, aucune fuite) | HTTP 404 {"erreur":"Route inconnue"} | OUI |
+| 28 | Injection « 1 OR 1=1 » dans le corps JSON | ENF-05 injection SQL | POST /api/demandes {entrepriseId:"1 OR 1=1"} | 400, aucune ligne créée | HTTP 400 {"erreur":"Entreprise invalide"} \| demandes avant/après : 2/2 | OUI |
+| 29 | Dépôt avec une entreprise inexistante | EF-02 validation | POST /api/demandes {entrepriseId:999999} | 400 | HTTP 400 {"erreur":"Entreprise introuvable"} | OUI |
+| 30 | Route inconnue | ENF-06 robustesse | GET /api/inconnu | 404 | HTTP 404 {"erreur":"Route inconnue"} | OUI |
+| 31 | Détail d'une demande inexistante | EF-03 cas limite | GET /api/demandes/999999 | 404 | HTTP 404 {"erreur":"Demande introuvable"} | OUI |
+| 32 | Mot de passe stocké haché (bcrypt) | ENF-06 confidentialité | SELECT hash FROM utilisateur WHERE email = tp8.20261119165115.a@univ.test | hash bcrypt ($2y$), password_verify() vrai, jamais le mot de passe en clair | algorithme $2y$, longueur 60, identique au mot de passe : non | OUI |

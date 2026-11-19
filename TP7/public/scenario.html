@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scénario de bout en bout — TP7</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <h1>Scénario de bout en bout — TP7</h1>
+  <nav><a href="index.html">Accueil</a> · <a href="parcours.html">Parcours des rôles</a></nav>
+</header>
+<main>
+  <section class="carte">
+    <h2>Objectif</h2>
+    <p>Prouver que l'interface est réellement reliée à l'API et à la base, et que le statut reste après rafraîchissement de la page. Les résultats bruts sont conservés dans <code>preuves/scenario_bout_en_bout.txt</code> du projet.</p>
+    <p><strong>Astuce :</strong> pour observer les deux rôles en même temps, utilise deux navigateurs différents ou une fenêtre privée. Les onglets d'un même navigateur partagent le cookie de session : une connexion responsable remplace alors la connexion étudiant. Dans un seul navigateur, déconnecte-toi simplement entre les deux rôles.</p>
+  </section>
+
+  <section class="carte">
+    <h2>Les 7 étapes</h2>
+    <table>
+      <caption>Scénario créer → retrouver → valider → rafraîchir</caption>
+      <thead><tr><th>Étape</th><th>Rôle</th><th>Action dans l'interface</th><th>Appel</th><th>Résultat attendu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Étudiant</td><td>Créer un compte ou se connecter</td><td><code>POST /api/inscription</code> ou <code>/api/connexion</code></td><td><code>201</code> ou <code>200</code>, redirection</td></tr>
+        <tr><td>2</td><td>Étudiant</td><td>Consulter « Mes demandes »</td><td><code>GET /api/demandes/mes</code></td><td><code>200</code>, tableau rempli</td></tr>
+        <tr><td>3</td><td>Étudiant</td><td>Choisir une entreprise et envoyer la demande</td><td><code>POST /api/demandes</code></td><td><code>201</code>, statut <code>BROUILLON</code>, liste rechargée</td></tr>
+        <tr><td>4</td><td>Responsable</td><td>Se connecter</td><td><code>POST /api/connexion</code></td><td><code>200</code>, redirection vers <code>responsable.html</code></td></tr>
+        <tr><td>5</td><td>Responsable</td><td>Choisir « Refuser » sans motif</td><td><code>PATCH /api/demandes/{id}/statut</code></td><td><code>400</code>, message près du champ motif, aucune écriture</td></tr>
+        <tr><td>6</td><td>Responsable</td><td>Choisir « Soumettre », puis « Valider »</td><td><code>PATCH /api/demandes/{id}/statut</code></td><td><code>200</code> deux fois, liste rechargée immédiatement</td></tr>
+        <tr><td>7</td><td>Responsable</td><td><strong>Rafraîchir la page (F5)</strong></td><td><code>GET /api/demandes</code></td><td>La demande affiche toujours <code>VALIDEE</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="carte">
+    <h2>Résultat observé lors du test réel</h2>
+    <pre class="sortie">Demande n° 5 créée avec le statut BROUILLON.
+Demande n° 5 : statut mis à jour en SOUMISE.
+Demande n° 5 : statut mis à jour en VALIDEE.
+Après F5 : 5  1  2  VALIDEE  —
+En base  : {"id":5,"etudiant_id":1,"entreprise_id":2,"statut":"VALIDEE","motif_refus":null}
+Historique : BROUILLON -&gt; SOUMISE -&gt; VALIDEE</pre>
+    <p>Sans le rafraîchissement, le statut pourrait venir uniquement de la mémoire du navigateur. Après F5, la page refait un appel <code>GET /api/demandes</code> : la valeur affichée provient donc de la base. C'est cette étape qui prouve la persistance.</p>
+  </section>
+
+  <section class="carte">
+    <h2>Cas d'erreurs joués pendant le scénario</h2>
+    <table>
+      <caption>Erreurs affichées de façon lisible</caption>
+      <thead><tr><th>Code</th><th>Déclenchement</th><th>Comportement de l'interface</th></tr></thead>
+      <tbody>
+        <tr><td><code>400</code></td><td>Refus sans motif, email invalide, entreprise introuvable</td><td>Message précis placé sous le champ concerné</td></tr>
+        <tr><td><code>401</code></td><td>Session absente</td><td>Redirection vers la connexion avec « Votre session a expiré » ; un mot de passe erroné affiche « Identifiants invalides » sans redirection</td></tr>
+        <tr><td><code>403</code></td><td>Session étudiant sur une page responsable</td><td>Message « Acces interdit », sans page blanche</td></tr>
+        <tr><td><code>409</code></td><td>Email déjà inscrit ou transition interdite</td><td>Message lisible près du champ ou dans la zone d'erreur</td></tr>
+        <tr><td><code>500</code></td><td>Injection de faute : mot de passe DB erroné</td><td>Message neutre « Erreur serveur », sans détail technique</td></tr>
+      </tbody>
+    </table>
+    <p><a class="bouton" href="connexion.html">Jouer le scénario</a></p>
+  </section>
+</main>
+<footer>Données fictives uniquement · TP7 · L3 SIL</footer>
+</body>
+</html>

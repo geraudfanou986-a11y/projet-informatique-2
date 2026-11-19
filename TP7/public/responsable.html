@@ -8,23 +8,33 @@
 </head>
 <body>
 <header>
-  <h1>Espace responsable — Décisions</h1>
-  <button class="secondaire" id="bouton-deconnexion" type="button">Se déconnecter</button>
+  <div>
+    <h1>Espace responsable — Décisions</h1>
+    <p id="profil-utilisateur" class="profil">Chargement du profil…</p>
+  </div>
+  <nav>
+    <a href="index.html">Accueil</a> ·
+    <a href="scenario.html">Scénario</a> ·
+    <button class="secondaire" id="bouton-deconnexion" type="button">Se déconnecter</button>
+  </nav>
 </header>
 <main>
   <section class="carte">
     <h2>Demandes à traiter</h2>
-    <p>Les données sont relues à chaque rafraîchissement : elles viennent de la base, pas du navigateur.</p>
-    <div class="actions">
-      <button class="secondaire" id="bouton-rafraichir" type="button">Rafraîchir la liste</button>
+    <p>Les données sont relues automatiquement depuis la base. Une décision prise ici met immédiatement la liste à jour, et l'onglet étudiant se synchronise aussi.</p>
+    <div class="suivi">
+      <label><input id="auto-responsable" type="checkbox" checked> Actualisation automatique (15 s)</label>
+      <span id="maj-responsable">Chargement…</span>
+      <button class="secondaire" id="bouton-rafraichir" type="button">Rafraîchir maintenant</button>
     </div>
+    <p id="notification-responsable" class="notification" role="status" hidden></p>
     <table>
       <caption>Réponse de GET /api/demandes</caption>
       <thead>
-        <tr><th>Identifiant</th><th>Étudiant n°</th><th>Entreprise n°</th><th>Statut</th><th>Motif</th></tr>
+        <tr><th>Identifiant</th><th>Étudiant n°</th><th>Entreprise n°</th><th>Statut</th><th>Motif</th><th>Action rapide</th></tr>
       </thead>
       <tbody id="corps-tableau-responsable">
-        <tr><td colspan="5" class="vide">Chargement…</td></tr>
+        <tr><td colspan="6" class="vide">Chargement…</td></tr>
       </tbody>
     </table>
   </section>

@@ -1,6 +1,13 @@
 <?php
 declare(strict_types=1);
 
+// Cookie de session non lisible en JavaScript (HttpOnly) et non envoyé en
+// requête croisée (SameSite) : défense en profondeur, en plus du jeton CSRF.
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax',
+    'secure' => (($_SERVER['HTTPS'] ?? '') !== '' && ($_SERVER['HTTPS'] ?? '') !== 'off'),
+]);
 session_start();
 
 $racine = dirname(__DIR__);
@@ -33,7 +40,20 @@ try {
     if ($methode === 'POST' && $chemin === '/api/connexion') {
         $authController->connexion();
     }
+    if ($methode === 'POST' && $chemin === '/api/inscription') {
+        $authController->inscription();
+    }
+    if ($methode === 'GET' && $chemin === '/api/csrf') {
+        $authController->csrf();
+    }
+    if ($methode === 'GET' && $chemin === '/api/moi') {
+        $authController->moi();
+    }
+    if ($methode === 'GET' && $chemin === '/api/entreprises') {
+        $controller->entreprises();
+    }
     if ($methode === 'POST' && $chemin === '/api/deconnexion') {
+        exigerCsrf();
         $authController->deconnexion();
     }
     if ($methode === 'GET' && $chemin === '/api/demandes') {
@@ -42,11 +62,20 @@ try {
     if ($methode === 'GET' && $chemin === '/api/demandes/mes') {
         $controller->listerMesDemandes();
     }
+    if (preg_match('#^/api/demandes/(\d+)$#', $chemin, $m) === 1 && $methode === 'GET') {
+        $controller->detail((int) $m[1]);
+    }
     if ($methode === 'POST' && $chemin === '/api/demandes') {
+        exigerCsrf();
         $controller->creer();
     }
     if (preg_match('#^/api/demandes/(\d+)/statut$#', $chemin, $m) === 1 && $methode === 'PATCH') {
+        exigerCsrf();
         $controller->changerStatut((int) $m[1]);
+    }
+    if (preg_match('#^/api/demandes/(\d+)/soutenance$#', $chemin, $m) === 1 && $methode === 'PATCH') {
+        exigerCsrf();
+        $controller->programmerSoutenance((int) $m[1]);
     }
 
     repondre(404, ['erreur' => 'Route inconnue']);

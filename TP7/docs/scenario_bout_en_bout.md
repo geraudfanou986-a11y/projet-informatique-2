@@ -13,6 +13,13 @@ reste après rafraîchissement de la page. Résultats bruts dans [`../preuves/sc
 | 6 | Responsable | Choisir « Soumettre », puis « Valider » | `PATCH /api/demandes/5/statut` | `200` deux fois, messages de succès |
 | 7 | Responsable | **Rafraîchir la page** (F5) | `GET /api/demandes` | La demande n° 5 affiche toujours `VALIDEE` |
 
+## Astuce pour observer les deux rôles
+
+Les onglets d'un même navigateur partagent le cookie `PHPSESSID` : se connecter comme responsable
+remplace la session étudiant. Pour suivre les deux rôles en direct, utilisez deux navigateurs
+différents ou une fenêtre privée. Sinon, déconnectez-vous simplement entre les deux rôles.
+L'actualisation automatique (15 s) relit la base à chaque cycle.
+
 ## Résultat observé
 
 ```

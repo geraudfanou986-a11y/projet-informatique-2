@@ -8,21 +8,28 @@
 </head>
 <body>
 <header>
-  <h1>Espace étudiant — Mes demandes de stage</h1>
-  <button class="secondaire" id="bouton-deconnexion" type="button">Se déconnecter</button>
+  <div>
+    <h1>Espace étudiant — Mes demandes de stage</h1>
+    <p id="profil-utilisateur" class="profil">Chargement du profil…</p>
+  </div>
+  <nav>
+    <a href="index.html">Accueil</a> ·
+    <a href="parcours.html">Parcours</a> ·
+    <button class="secondaire" id="bouton-deconnexion" type="button">Se déconnecter</button>
+  </nav>
 </header>
 <main>
   <section class="carte">
     <h2>Déposer une demande</h2>
     <form id="formulaire-demande" novalidate>
-      <label for="entreprise-id">Identifiant de l'entreprise</label>
-      <input id="entreprise-id" name="entrepriseId" type="number" min="1" step="1" required
-             aria-describedby="erreur-entreprise">
+      <label for="entreprise-id">Entreprise</label>
+      <select id="entreprise-id" name="entrepriseId" required aria-describedby="erreur-entreprise">
+        <option value="">Chargement des entreprises…</option>
+      </select>
       <p id="erreur-entreprise" class="zone-erreur" role="alert"></p>
 
       <div class="actions">
         <button type="submit">Envoyer la demande</button>
-        <button class="secondaire" type="button" id="bouton-rafraichir">Rafraîchir la liste</button>
       </div>
     </form>
     <p id="message-demande" class="zone-succes" role="status"></p>
@@ -31,6 +38,12 @@
 
   <section class="carte">
     <h2>Liste de mes demandes</h2>
+    <div class="suivi">
+      <label><input id="auto-etudiant" type="checkbox" checked> Actualisation automatique (15 s)</label>
+      <span id="maj-etudiant">Chargement…</span>
+      <button class="secondaire" id="bouton-rafraichir" type="button">Rafraîchir maintenant</button>
+    </div>
+    <p id="notification-etudiant" class="notification" role="status" hidden></p>
     <table>
       <caption>Données renvoyées par GET /api/demandes/mes</caption>
       <thead>
@@ -48,7 +61,7 @@
     <table id="tableau-detail" hidden>
       <tbody>
         <tr><th>Demande n°</th><td id="detail-id"></td></tr>
-        <tr><th>Entreprise n°</th><td id="detail-entreprise"></td></tr>
+        <tr><th>Entreprise</th><td id="detail-entreprise"></td></tr>
         <tr><th>Statut</th><td id="detail-statut"></td></tr>
         <tr><th>Motif de refus</th><td id="detail-motif"></td></tr>
       </tbody>

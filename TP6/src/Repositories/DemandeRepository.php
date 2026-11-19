@@ -8,6 +8,22 @@ final class DemandeRepository
     {
     }
 
+    /** Liste des entreprises proposées dans le formulaire de dépôt. */
+    public function listerEntreprises(): array
+    {
+        return $this->pdo
+            ->query('SELECT id, nom, ville FROM entreprise ORDER BY nom')
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function entrepriseExiste(int $id): bool
+    {
+        $stmt = $this->pdo->prepare('SELECT 1 FROM entreprise WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+
+        return $stmt->fetchColumn() !== false;
+    }
+
     public function findById(int $id): ?array
     {
         $stmt = $this->pdo->prepare('SELECT * FROM demande_stage WHERE id = :id');
@@ -58,6 +74,25 @@ final class DemandeRepository
             ':d' => $demandeId, ':av' => $avant, ':ap' => $apres,
             ':m' => $motif, ':u' => $utilisateurId,
         ]);
+    }
+
+    /**
+     * Crée ou met à jour la soutenance d'une demande (une seule par demande : contrainte UNIQUE).
+     * Requête préparée, valeurs liées : aucune concaténation SQL.
+     */
+    public function programmerSoutenance(int $demandeId, string $dateHeure, ?string $salle): array
+    {
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO soutenance (demande_id, date_heure, salle)
+             VALUES (:d, :dh, :s)
+             ON DUPLICATE KEY UPDATE date_heure = VALUES(date_heure), salle = VALUES(salle)'
+        );
+        $stmt->execute([':d' => $demandeId, ':dh' => $dateHeure, ':s' => $salle]);
+
+        $stmt = $this->pdo->prepare('SELECT id, demande_id, date_heure, salle FROM soutenance WHERE demande_id = :d');
+        $stmt->execute([':d' => $demandeId]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
     /**
