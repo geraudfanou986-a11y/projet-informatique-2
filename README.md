@@ -19,6 +19,9 @@ soutenances (données fictives uniquement).
 | `TD2/` | Exigences fonctionnelles et non fonctionnelles, matrice de traçabilité (PDF) |
 | `TP3/` | Modèles UML (cas d'utilisation, classes), scripts SQL et jeu d'essai vérifié ; document de correction en `.docx`, `.html` et `.pdf` |
 | `TP4/` | Squelette technique en couches, contrat d'API, ADR-001, test de la route `/api/sante` et document de remise (`.docx`, `.html`, `.pdf`) |
+| `TP5/` | Organisation Git : kanban, conventions de branches, conflit résolu et sortie de `git log --graph` |
+| `TP6/` | API réelle des demandes : contrôleurs, services, repositories, authentification et preuves HTTP |
+| `TP7/` | Interface accessible reliée à l'API, parcours des rôles, test XSS et scénario de bout en bout |
 
 ## Branches
 
@@ -27,7 +30,7 @@ fusionnées après relecture du diff. Les livrables actuellement présents sont 
 
 | Branche | Contenu |
 |---|---|
-| `main` | Squelette du dépôt et livrables `TD1`, `TD2`, `TP3`, `TP4` |
+| `main` | Squelette du dépôt et livrables `TD1`, `TD2`, `TP3`, `TP4`, `TP5`, `TP6`, `TP7` |
 
 ## Périmètre retenu (v1)
 
@@ -46,9 +49,10 @@ convention signée électroniquement, messagerie interne.
 | TD2 | Exigences (EF, ENF) et matrice de traçabilité | Fait |
 | TP3 | Diagrammes UML, schéma SQL, jeu d'essai vérifié | Fait |
 | TP4 | Squelette technique, contrat d'API, ADR-001 | Fait |
-| TP5 | Dépôt Git et organisation d'équipe | En cours |
-| TP6 | API des demandes | En cours |
-| TP7 à TP10 | Interface, tests, sécurité, synthèse | À venir |
+| TP5 | Dépôt Git et organisation d'équipe | Fait |
+| TP6 | API des demandes | Fait |
+| TP7 | Interface et intégration | Fait |
+| TP8 à TP10 | Plan de tests, audit de sécurité, synthèse | À venir |
 
 ## Démarrage rapide
 
@@ -56,6 +60,12 @@ convention signée électroniquement, messagerie interne.
 mysql -u root -p -e "CREATE DATABASE stages CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 mysql -u root -p stages < TP3/001_schema.sql
 mysql -u root -p stages < TP3/002_seed.sql
-cd TP4 && cp .env.example .env && php -S localhost:8000 -t public
+mysql -u root -p stages < TP6/sql/01_complements.sql
+
+# API seule (TP6)
+cd TP6 && cp .env.example .env && php -S localhost:8000 -t public
 curl -i http://localhost:8000/api/sante
+
+# Interface + API sur un seul port (TP7)
+cd TP7 && php -S 127.0.0.1:8001 -t public public/router.php
 ```
