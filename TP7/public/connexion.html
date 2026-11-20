@@ -2,101 +2,13 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Connexion — TP7</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <meta http-equiv="refresh" content="0; url=index.html">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="index.html">
+  <title>Connexion — redirection</title>
 </head>
 <body>
-<header>
-  <h1>Connexion — Gestion des stages</h1>
-  <nav><a href="index.html">Accueil</a> · <a href="parcours.html">Parcours des rôles</a></nav>
-</header>
-<main>
-  <section class="carte" style="max-width:620px">
-    <div class="onglets" role="tablist" aria-label="Gestion du compte">
-      <button id="onglet-connexion" class="onglet actif" type="button" role="tab"
-              aria-selected="true" aria-controls="panneau-connexion">Se connecter</button>
-      <button id="onglet-inscription" class="onglet" type="button" role="tab"
-              aria-selected="false" aria-controls="panneau-inscription">Créer un compte</button>
-    </div>
-
-    <div id="panneau-connexion" role="tabpanel" aria-labelledby="onglet-connexion">
-      <h2>Identifiez-vous</h2>
-      <p id="raison-session" class="zone-erreur" role="status"></p>
-
-      <form id="formulaire-connexion" novalidate>
-        <label for="email">Adresse email</label>
-        <input id="email" name="email" type="email" required autocomplete="username"
-               aria-describedby="erreur-email">
-        <p id="erreur-email" class="zone-erreur" role="alert"></p>
-
-        <label for="mot-de-passe">Mot de passe</label>
-        <input id="mot-de-passe" name="motDePasse" type="password" required
-               autocomplete="current-password" aria-describedby="erreur-mot-de-passe">
-        <p id="erreur-mot-de-passe" class="zone-erreur" role="alert"></p>
-
-        <div class="actions">
-          <button type="submit">Se connecter</button>
-        </div>
-      </form>
-
-      <p id="erreur-generale" class="zone-erreur" role="alert"></p>
-      <p id="message-connexion" class="zone-succes" role="status"></p>
-    </div>
-
-    <div id="panneau-inscription" role="tabpanel" aria-labelledby="onglet-inscription" hidden>
-      <h2>Créer mon compte</h2>
-      <p class="vide">Tout visiteur peut s'inscrire. Le mot de passe est haché côté serveur ; aucun mot de passe n'est stocké en clair.</p>
-
-      <form id="formulaire-inscription" novalidate>
-        <label for="ins-nom">Nom</label>
-        <input id="ins-nom" name="nom" type="text" required autocomplete="family-name"
-               aria-describedby="erreur-ins-nom">
-        <p id="erreur-ins-nom" class="zone-erreur" role="alert"></p>
-
-        <label for="ins-prenom">Prénom</label>
-        <input id="ins-prenom" name="prenom" type="text" required autocomplete="given-name"
-               aria-describedby="erreur-ins-prenom">
-        <p id="erreur-ins-prenom" class="zone-erreur" role="alert"></p>
-
-        <label for="ins-email">Adresse email</label>
-        <input id="ins-email" name="email" type="email" required autocomplete="email"
-               aria-describedby="erreur-ins-email">
-        <p id="erreur-ins-email" class="zone-erreur" role="alert"></p>
-
-        <label for="ins-role">Je m'inscris en tant que</label>
-        <select id="ins-role" name="role" required aria-describedby="erreur-ins-role">
-          <option value="">— Choisir —</option>
-          <option value="etudiant">Étudiant — déposer et suivre mes demandes</option>
-          <option value="responsable">Responsable — traiter les demandes</option>
-        </select>
-        <p id="erreur-ins-role" class="zone-erreur" role="alert"></p>
-
-        <label for="ins-mot-de-passe">Mot de passe (8 caractères minimum)</label>
-        <input id="ins-mot-de-passe" name="motDePasse" type="password" required
-               autocomplete="new-password" aria-describedby="erreur-ins-mot-de-passe">
-        <p id="erreur-ins-mot-de-passe" class="zone-erreur" role="alert"></p>
-
-        <label for="ins-confirmation">Confirmer le mot de passe</label>
-        <input id="ins-confirmation" name="confirmation" type="password" required
-               autocomplete="new-password" aria-describedby="erreur-ins-confirmation">
-        <p id="erreur-ins-confirmation" class="zone-erreur" role="alert"></p>
-
-        <div class="actions">
-          <button type="submit">Créer mon compte et entrer</button>
-        </div>
-      </form>
-
-      <p id="erreur-ins-generale" class="zone-erreur" role="alert"></p>
-      <p id="message-inscription" class="zone-succes" role="status"></p>
-      <p class="vide">Un compte responsable créé ici est destiné à la démonstration du TP : dans une vraie application, ce rôle serait attribué par l'administration.</p>
-    </div>
-  </section>
-</main>
-<footer>Le serveur reste la source de vérité : les contrôles du navigateur ne remplacent pas la validation PHP.</footer>
-
-<script src="js/api.js"></script>
-<script src="js/commun.js"></script>
-<script src="js/connexion.js"></script>
+  <p>La connexion se fait désormais depuis la page d’accueil : <a href="index.html">ouvrir la connexion</a>.</p>
+  <script>location.replace('index.html' + location.search);</script>
 </body>
 </html>

@@ -6,13 +6,14 @@ Interface Web accessible reliée à l'API du TP6. Données fictives uniquement.
 
 | Fichier | Rôle |
 |---|---|
-| `public/index.html` | Accueil, liens vers les parcours et le scénario |
-| `public/connexion.html` | Connexion **et inscription de tout visiteur** (deux onglets accessibles) |
-| `public/etudiant.html` | Liste de ses demandes, dépôt, détail, actualisation automatique, test XSS |
-| `public/responsable.html` | Liste des demandes, actions rapides, décision, actualisation automatique |
-| `public/parcours.html`, `public/scenario.html` | Vraies pages HTML (plus de liens vers des fichiers `.md` bruts) |
-| `public/js/api.js` | Appels `fetch` + gestion lisible des erreurs 400/401/500 |
-| `public/js/commun.js` | Rendu sécurisé avec `textContent`, messages, déconnexion |
+| `public/index.html` | Accueil, connexion **et inscription de tout visiteur**, comptes de démonstration en un clic |
+| `public/app.html` | Espace connecté unifié : tableau de bord, demandes, soutenances, historique, profil |
+| `public/connexion.html`, `public/etudiant.html`, `public/responsable.html` | Anciennes pages conservées : elles redirigent vers l'interface unifiée |
+| `public/parcours.html`, `public/scenario.html` | Vraies pages HTML reprenant la charte finale (plus de liens vers des `.md` bruts) |
+| `public/assets/js/api.js` | Appels `fetch` + gestion lisible des erreurs 400/401/500, CSRF |
+| `public/assets/js/app.js` | Rendu sécurisé avec `textContent`, notifications, relecture automatique (15 s) |
+| `public/assets/js/auth.js` | Connexion, inscription et comptes de démonstration |
+| `public/assets/css/style.css` | Charte graphique commune à toutes les pages |
 | `public/router.php` | Délègue `/api/*` à l'API du TP6 sur la même origine |
 | `docs/parcours.md`, `docs/parcours.svg` | Parcours des deux rôles dessinés avant le codage |
 | `docs/scenario_bout_en_bout.md` | Scénario complet créer → retrouver → valider → rafraîchir |
@@ -39,7 +40,7 @@ php -S 127.0.0.1:8001 -t public public/router.php
 
 Ouvrir ensuite <http://127.0.0.1:8001/>.
 
-N'importe qui peut créer son compte depuis `connexion.html` → « Créer un compte ».
+N'importe qui peut créer son compte depuis l'accueil → onglet « Inscription ».
 Le mot de passe est haché avec `password_hash()` et une fiche `etudiant` est créée
 dans la même transaction pour un compte étudiant. Le compte est connecté automatiquement.
 
@@ -74,9 +75,9 @@ Pour voir les changements : modifie un fichier, puis rafraîchis le navigateur (
 
 1. **Formulaires accessibles** : chaque champ a un `<label for>` lié à son `id`, un type adapté (`email`, `number`, `password`) et une zone `<p role="alert">` voisine du champ. Les contrôles navigateur (`required`) ne remplacent pas ceux du serveur.
 2. **Erreurs lisibles** : `400` affiché près du champ, `401` redirection vers la connexion avec message, `500` message neutre. Aucune page blanche.
-3. **Rendu sécurisé** : toute donnée affichée passe par `textContent` ; le test avec `<b>test</b>` et `<script>alert(1)</script>` est détaillé dans `preuves/test_balises.txt`.
-4. **Intégration** : le scénario se termine par un rafraîchissement de page et une relecture depuis la base, décrit dans `docs/scenario_bout_en_bout.md` et `preuves/scenario_bout_en_bout.txt`.
-5. **Temps réel** : les listes sont relues toutes les 15 s ; une décision surligne la ligne modifiée et affiche une notification. Voir `preuves/inscription_et_temps_reel.txt`.
+3. **Rendu sécurisé** : toute donnée affichée passe par `textContent`. Le test est fait avec un vrai motif de refus contenant `<script>alert(1)</script> <b>test</b>` : il s'affiche tel quel chez l'étudiant, sans balise créée ni boîte de dialogue. Voir `preuves/test_balises.txt` et `preuves/capture_etudiant_xss.png`.
+4. **Intégration** : le scénario se termine par un rafraîchissement de page et une relecture depuis la base, décrit dans `docs/scenario_bout_en_bout.md` et `preuves/scenario_bout_en_bout.txt`. Voir aussi `preuves/capture_responsable_persistance.png`.
+5. **Temps réel** : les listes sont relues toutes les 15 s lorsqu'aucune modale n'est ouverte et qu'aucun champ n'a le focus ; une décision fait clignoter la ligne modifiée et affiche une notification. Voir `preuves/inscription_et_temps_reel.txt`.
 
 Pour observer les deux rôles en direct, utilisez deux navigateurs ou une fenêtre privée :
 les onglets d'un même navigateur partagent le cookie `PHPSESSID`.

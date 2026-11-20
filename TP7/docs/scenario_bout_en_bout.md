@@ -2,23 +2,24 @@
 
 Objectif : prouver que l'interface est réellement reliée à l'API et à la base, et que le statut
 reste après rafraîchissement de la page. Résultats bruts dans [`../preuves/scenario_bout_en_bout.txt`](../preuves/scenario_bout_en_bout.txt).
+Version HTML reprenant la charte finale : [`../public/scenario.html`](../public/scenario.html).
 
 | Étape | Rôle | Action dans l'interface | Appel | Résultat attendu |
 |---|---|---|---|---|
-| 1 | Étudiant | Se connecter avec le compte fictif | `POST /api/connexion` | `200`, redirection vers `etudiant.html` |
-| 2 | Étudiant | Consulter « Mes demandes » | `GET /api/demandes/mes` | `200`, tableau rempli |
-| 3 | Étudiant | Saisir `2` et cliquer sur « Envoyer la demande » | `POST /api/demandes` | `201`, message « Demande n° 5 créée… », liste rechargée |
-| 4 | Responsable | Se connecter | `POST /api/connexion` | `200`, redirection vers `responsable.html` |
-| 5 | Responsable | Choisir « Refuser » sans motif | `PATCH /api/demandes/5/statut` | `400`, message près du champ motif, aucune écriture |
-| 6 | Responsable | Choisir « Soumettre », puis « Valider » | `PATCH /api/demandes/5/statut` | `200` deux fois, messages de succès |
-| 7 | Responsable | **Rafraîchir la page** (F5) | `GET /api/demandes` | La demande n° 5 affiche toujours `VALIDEE` |
+| 1 | Étudiant | Se connecter depuis l'accueil | `POST /api/connexion` | `200`, ouverture de `app.html` |
+| 2 | Étudiant | Ouvrir la vue « Demandes » | `GET /api/demandes/mes` | `200`, cartes remplies |
+| 3 | Étudiant | « Nouvelle demande » → choisir l'entreprise | `POST /api/demandes` | `201`, message « Demande créée… », liste rechargée |
+| 4 | Étudiant | Cliquer sur « Soumettre » | `PATCH /api/demandes/{id}/statut` | `200`, statut `SOUMISE` |
+| 5 | Responsable | Se connecter puis refuser sans motif | `PATCH /api/demandes/{id}/statut` | `400`, message lisible, aucune écriture |
+| 6 | Responsable | Valider la demande soumise | `PATCH /api/demandes/{id}/statut` | `200`, liste rechargée immédiatement |
+| 7 | Responsable | **Rafraîchir la page** (F5) | `GET /api/demandes` | La demande affiche toujours `VALIDEE` |
 
 ## Astuce pour observer les deux rôles
 
 Les onglets d'un même navigateur partagent le cookie `PHPSESSID` : se connecter comme responsable
 remplace la session étudiant. Pour suivre les deux rôles en direct, utilisez deux navigateurs
 différents ou une fenêtre privée. Sinon, déconnectez-vous simplement entre les deux rôles.
-L'actualisation automatique (15 s) relit la base à chaque cycle.
+L'actualisation automatique (15 s) relit la base à chaque cycle, sauf pendant une modale ou une saisie.
 
 ## Résultat observé
 
@@ -26,10 +27,12 @@ L'actualisation automatique (15 s) relit la base à chaque cycle.
 Demande n° 5 créée avec le statut BROUILLON.
 Demande n° 5 : statut mis à jour en SOUMISE.
 Demande n° 5 : statut mis à jour en VALIDEE.
-Après F5 : 5  1  2  VALIDEE  —
+Après F5 : la ligne affiche toujours VALIDEE.
 En base  : {"id":5,"etudiant_id":1,"entreprise_id":2,"statut":"VALIDEE","motif_refus":null}
 Historique : BROUILLON -> SOUMISE -> VALIDEE
 ```
+
+Capture de la relecture après F5 : `../preuves/capture_responsable_persistance.png`.
 
 ## Pourquoi cette dernière étape compte
 
@@ -41,7 +44,7 @@ C'est cette étape qui prouve la persistance.
 
 | Code | Déclenchement | Comportement de l'interface |
 |---|---|---|
-| `400` | Refus sans motif | Message « Motif obligatoire pour un refus » sous le champ motif |
-| `401` | Session absente | Redirection vers `connexion.html?raison=session` avec message |
-| `403` | Session étudiant sur une page responsable | Message « Acces interdit », sans page blanche |
+| `400` | Refus sans motif | Message « Motif obligatoire pour un refus » dans une notification |
+| `401` | Session absente | Retour à l'accueil avec « Votre session a expiré » |
+| `403` | Demande d'un autre étudiant ou rôle insuffisant | Message « Accès interdit », sans page blanche |
 | `500` | Injection de faute : mot de passe DB erroné | Message neutre « Erreur serveur », sans détail technique |

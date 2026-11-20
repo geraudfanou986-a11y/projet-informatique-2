@@ -1,36 +1,41 @@
 # TP7 — Parcours des deux rôles
 
-Dessinés avant le codage, comme demandé dans le chapitre 7. Le schéma visuel est dans [`parcours.svg`](parcours.svg).
+Dessinés avant le codage, comme demandé dans le chapitre 7, puis adaptés à l'interface finale. Le schéma visuel est dans [`parcours.svg`](parcours.svg) et une version HTML reprenant la charte finale est dans [`public/parcours.html`](../public/parcours.html).
 
-## Parcours étudiant (4 écrans)
+## Parcours étudiant
 
 ```
-Connexion → Mes demandes → Formulaire de dépôt → Détail d'une demande
+Connexion → Tableau de bord → Nouvelle demande → Soumettre → Détail / Historique
 ```
 
-| Écran | Action utilisateur | Appel / résultat |
+| Étape dans l'interface | Action utilisateur | Appel / résultat |
 |---|---|---|
-| 1. `connexion.html` | Créer un compte (nom, prénom, email, rôle, mot de passe) ou saisir ses identifiants | `POST /api/inscription` (201) ou `POST /api/connexion` (200) → redirection vers `etudiant.html` |
-| 2. `etudiant.html` (partie liste) | Arrivée sur la page, actualisation toutes les 15 s | `GET /api/demandes/mes` → tableau des demandes, surlignage si le statut a changé |
-| 3. `etudiant.html` (formulaire) | Choisir l'entreprise dans une liste déroulante, envoyer | `GET /api/entreprises` puis `POST /api/demandes` → `201`, rechargement de la liste |
-| 4. `etudiant.html` (détail) | Cliquer sur « Voir détail » | Affichage de l'id, de l'entreprise, du statut et du motif avec `textContent` |
+| 1. `index.html` | Créer un compte (onglet « Inscription ») ou saisir ses identifiants | `POST /api/inscription` (201) ou `POST /api/connexion` (200) → ouverture de `app.html` |
+| 2. `app.html` (tableau de bord) | Lecture des compteurs et des cartes | `GET /api/demandes/mes`, `/api/entreprises`, `/api/etudiants`, `/api/soutenances` |
+| 3. `app.html` (modale « Nouvelle demande ») | Choisir l'entreprise dans la liste déroulante | `POST /api/demandes` → `201`, statut `BROUILLON`, rechargement |
+| 4. `app.html` (carte) | Cliquer sur « Soumettre » | `PATCH /api/demandes/{id}/statut` → `SOUMISE` |
+| 5. `app.html` (modales « Détail » / « Historique ») | Ouvrir le détail et le journal | `GET /api/demandes/{id}/historique` → transitions avec auteurs |
 
-Zone transverse : le formulaire de vérification du rendu sécurisé permet de saisir `<b>test</b>` et de constater que les balises s'affichent telles quelles.
+Les données affichées passent toutes par `textContent` : le test du motif de refus contenant `<b>test</b>` et `<script>alert(1)</script>` est détaillé dans `preuves/test_balises.txt`.
 
-## Parcours responsable (3 écrans)
+## Parcours responsable
 
 ```
-Connexion → Liste des demandes à traiter → Décision (soumettre / valider / refuser)
+Connexion → Toutes les demandes → Décision → Soutenance → Historique
 ```
 
-| Écran | Action utilisateur | Appel / résultat |
+| Étape dans l'interface | Action utilisateur | Appel / résultat |
 |---|---|---|
-| 1. `connexion.html` | Saisir les identifiants responsable | `POST /api/connexion` → redirection vers `responsable.html` |
-| 2. `responsable.html` (liste) | Arrivée, « Rafraîchir » ou actualisation automatique (15 s) | `GET /api/demandes` → tableau reçu de la base |
-| 3. `responsable.html` (décision) | Action rapide « Soumettre » / « Valider », ou choisir un statut et saisir un motif si refus | `PATCH /api/demandes/{id}/statut` → `200`, puis relecture immédiate et notification |
+| 1. `index.html` | Saisir les identifiants responsable | `POST /api/connexion` → ouverture de `app.html` avec le rôle `responsable` |
+| 2. `app.html` (vue « Demandes ») | Recherche, filtres, bouton « Actualiser » | `GET /api/demandes` → tableau complet avec noms et entreprises |
+| 3. `app.html` (modale de décision) | « Valider » ou « Refuser » avec motif obligatoire | `PATCH /api/demandes/{id}/statut` → `200`, relecture immédiate et notification |
+| 4. `app.html` (modale « Soutenance ») | Programmer date et salle | `PATCH /api/demandes/{id}/soutenance` → agenda mis à jour |
+| 5. `app.html` (modale « Historique ») | Consulter le journal | `GET /api/demandes/{id}/historique` → statuts, motifs, auteurs et horodatages |
+
+La transition suit l'ordre métier : `BROUILLON → SOUMISE → VALIDEE`. Un refus sans motif renvoie `400` et le message est affiché dans une notification lisible.
 
 ## Choix d'interface
 
-- Une seule page par rôle, avec des sections correspondant aux écrans du parcours : moins d'allers-retours, mais des sections clairement titrées.
-- Un bouton « Rafraîchir » explicite, complété par une actualisation automatique (15 s) : les données affichées reviennent toujours de la base.
-- Aucun lien direct vers les routes API : tout passe par `fetch` dans `public/js/api.js`.
+- Une coque commune (`app.html`) et des vues clairement titrées, au lieu d'une page séparée par rôle : moins d'allers-retours, un rendu homogène.
+- Un bouton « Actualiser » explicite, complété par une relecture automatique (15 s) qui ne s'exécute ni pendant une modale ni pendant une saisie : les données affichées reviennent toujours de la base.
+- Aucun lien direct vers les routes API : tout passe par `fetch` dans `public/assets/js/api.js`.

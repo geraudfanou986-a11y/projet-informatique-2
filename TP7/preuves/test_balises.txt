@@ -1,35 +1,62 @@
-TEST DU RENDU SÉCURISÉ — TP7
-============================
-Date : 19/11/2026
-Environnement : PHP 8.3, MariaDB 10.4, navigateur Chromium, serveur http://127.0.0.1:8001
+TEST DU RENDU SÉCURISÉ — TP7 (interface finale)
+================================================
+Date : 20/11/2026
+Environnement : PHP 8.5, MariaDB 10.4, navigateur Chromium, serveur http://127.0.0.1:8001
+Interface : page d'accueil + espace unifié app.html (charte Stageflow)
 
-1. Test dans le navigateur (page etudiant.html)
------------------------------------------------
-Valeur saisie dans le champ « Valeur à tester » :
-    <script>alert(1)</script>
+1. Méthode retenue
+------------------
+L'ancien champ « Valeur à tester » a disparu avec l'interface unifiée. Le test est
+désormais fait avec une donnée réelle qui circule dans toute la chaîne :
+formulaire → API → base → API → navigateur.
 
-Action : clic sur « Tester l'affichage » (fonction ajouterTexteDansListe, textContent).
+Étapes effectuées dans le navigateur :
+  a. Connexion avec le compte responsable (sylvie.hounkpe@univ.test).
+  b. Vue « Demandes » → bouton « Refuser » sur la demande n° 1.
+  c. Motif saisi : <script>alert(1)</script> <b>test</b>
+  d. Confirmation → PATCH /api/demandes/1/statut → 200, statut REFUSEE.
+  e. Déconnexion, connexion avec le compte étudiant (koffi.adjovi@univ.test).
+  f. Vue « Mes demandes » : la carte de la demande n° 1 affiche le motif.
 
-Résultat lu dans le DOM :
-    items[0] = "<script>alert(1)</script>  ← affiché avec textContent"
-    scripts  = 0        (aucun élément <script> créé dans la liste)
-    innerHTML = "&lt;script&gt;alert(1)&lt;/script&gt;  ← affiché avec textContent"
-    boîte de dialogue alert() : aucune (dialog = null)
+2. Résultat lu dans le DOM (côté étudiant)
+------------------------------------------
+Texte affiché :
+    Motif : <script>alert(1)</script> <b>test</b>
+    scripts créés dans #contenu : 0
+    éléments <b> créés dans #contenu : 0
+    innerHTML contient &lt;script&gt; : oui (échappement HTML du texte)
+    boîte de dialogue alert() : aucune
+    erreurs console : aucune
 
-Conclusion : la balise est affichée comme du texte, elle n'est ni interprétée ni exécutée.
+Conclusion : la balise est affichée comme du texte. Elle n'est ni interprétée ni
+exécutée, et aucune mise en gras n'est produite. Le motif est relu depuis la base
+lors de la connexion de l'étudiant : le test couvre bien l'aller-retour complet.
+
 Capture : preuves/capture_etudiant_xss.png
 
-2. Test complémentaire avec <b>test</b>
----------------------------------------
-Même résultat : le texte « <b>test</b> » s'affiche tel quel, sans mise en gras.
-Le code ne contient aucun innerHTML appliqué à une donnée saisie ou reçue de l'API.
+3. Persistance côté responsable
+-------------------------------
+Après un rafraîchissement de la page (F5), la liste « Toutes les demandes » affiche
+toujours la demande n° 1 comme « Refusée ». L'historique montre :
+    En attente → Refusée
+    20 nov. 2026, 17:35 · <script>alert(1)</script> <b>test</b> · sylvie.hounkpe@univ.test
+Là encore : 0 balise <script>, 0 balise <b>, aucun appel à alert().
 
-3. Contrôle côté serveur (PHP 8)
+Capture : preuves/capture_responsable_persistance.png
+
+Les deux captures ont été refaites depuis l'interface finale sur http://127.0.0.1:8001/
+après l'ajout du libellé visible « Se déconnecter ». Contrôle effectué avant chaque
+capture : motif XSS affiché en texte littéral, 0 balise <script> et 0 balise <b>
+dans la vue, bouton « Se déconnecter » présent et visible dans la barre latérale.
+
+4. Contrôle côté serveur (PHP 8)
 --------------------------------
-Commande : php -r 'echo htmlspecialchars("<script>alert(1)</script>", ENT_QUOTES|ENT_SUBSTITUTE, "UTF-8");'
+Commande :
+    php -r 'echo htmlspecialchars("<script>alert(1)</script>", ENT_QUOTES|ENT_SUBSTITUTE, "UTF-8");'
 
 Sortie réelle :
-    <b>test</b> -> &lt;b&gt;test&lt;/b&gt;
-    <script>alert(1)</script> -> &lt;script&gt;alert(1)&lt;/script&gt;
+    &lt;script&gt;alert(1)&lt;/script&gt;
 
-Les deux protections (textContent côté navigateur, htmlspecialchars côté serveur) sont vérifiées.
+Le rendu côté navigateur utilise textContent (dans assets/js/app.js, fonction h()),
+le code serveur utilise htmlspecialchars() quand il sort du HTML. Les deux
+protections sont vérifiées : aucune donnée n'est jamais passée à innerHTML.

@@ -1,0 +1,16 @@
+# Secrets : jamais versionnés
+.env
+
+# Dépendances et caches
+/vendor/
+*.log
+
+# Éditeurs et système
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Sauvegardes de base
+*.dump
+sauvegarde.sql

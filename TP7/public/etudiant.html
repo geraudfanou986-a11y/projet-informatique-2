@@ -2,89 +2,13 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Espace étudiant — TP7</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <meta http-equiv="refresh" content="0; url=app.html">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="app.html">
+  <title>Espace étudiant — redirection</title>
 </head>
 <body>
-<header>
-  <div>
-    <h1>Espace étudiant — Mes demandes de stage</h1>
-    <p id="profil-utilisateur" class="profil">Chargement du profil…</p>
-  </div>
-  <nav>
-    <a href="index.html">Accueil</a> ·
-    <a href="parcours.html">Parcours</a> ·
-    <button class="secondaire" id="bouton-deconnexion" type="button">Se déconnecter</button>
-  </nav>
-</header>
-<main>
-  <section class="carte">
-    <h2>Déposer une demande</h2>
-    <form id="formulaire-demande" novalidate>
-      <label for="entreprise-id">Entreprise</label>
-      <select id="entreprise-id" name="entrepriseId" required aria-describedby="erreur-entreprise">
-        <option value="">Chargement des entreprises…</option>
-      </select>
-      <p id="erreur-entreprise" class="zone-erreur" role="alert"></p>
-
-      <div class="actions">
-        <button type="submit">Envoyer la demande</button>
-      </div>
-    </form>
-    <p id="message-demande" class="zone-succes" role="status"></p>
-    <p id="erreur-demande" class="zone-erreur" role="alert"></p>
-  </section>
-
-  <section class="carte">
-    <h2>Liste de mes demandes</h2>
-    <div class="suivi">
-      <label><input id="auto-etudiant" type="checkbox" checked> Actualisation automatique (15 s)</label>
-      <span id="maj-etudiant">Chargement…</span>
-      <button class="secondaire" id="bouton-rafraichir" type="button">Rafraîchir maintenant</button>
-    </div>
-    <p id="notification-etudiant" class="notification" role="status" hidden></p>
-    <table>
-      <caption>Données renvoyées par GET /api/demandes/mes</caption>
-      <thead>
-        <tr><th>Identifiant</th><th>Entreprise</th><th>Statut</th><th>Détail</th></tr>
-      </thead>
-      <tbody id="corps-tableau-etudiant">
-        <tr><td colspan="4" class="vide">Chargement…</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <section class="carte" id="detail-demande">
-    <h2>Détail de la demande</h2>
-    <p class="vide" id="detail-vide">Sélectionnez une demande dans la liste.</p>
-    <table id="tableau-detail" hidden>
-      <tbody>
-        <tr><th>Demande n°</th><td id="detail-id"></td></tr>
-        <tr><th>Entreprise</th><td id="detail-entreprise"></td></tr>
-        <tr><th>Statut</th><td id="detail-statut"></td></tr>
-        <tr><th>Motif de refus</th><td id="detail-motif"></td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <section class="carte">
-    <h2>Vérification du rendu sécurisé</h2>
-    <p>Saisissez une valeur contenant des balises HTML, par exemple <code>&lt;b&gt;test&lt;/b&gt;</code> ou <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>. Le texte doit s'afficher tel quel, sans mise en gras ni exécution.</p>
-    <label for="saisie-xss">Valeur à tester</label>
-    <input id="saisie-xss" type="text" value="<b>test</b>"
-           aria-describedby="erreur-xss">
-    <p id="erreur-xss" class="zone-erreur" role="alert"></p>
-    <div class="actions">
-      <button type="button" id="bouton-test-xss">Tester l'affichage</button>
-    </div>
-    <ul id="liste-xss" aria-live="polite"></ul>
-  </section>
-</main>
-<footer>Aucune donnée saisie n'est insérée avec innerHTML : le rendu passe toujours par textContent.</footer>
-
-<script src="js/api.js"></script>
-<script src="js/commun.js"></script>
-<script src="js/etudiant.js"></script>
+  <p>L’espace étudiant fait partie de l’interface unifiée : <a href="app.html">ouvrir mon espace</a>.</p>
+  <script>location.replace('app.html' + location.search);</script>
 </body>
 </html>

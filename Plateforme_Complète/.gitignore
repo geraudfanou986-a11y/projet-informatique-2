@@ -1,0 +1,8 @@
+# Configuration locale générée par scripts/installer.php (contient des mots de passe)
+.env
+*.dump
+*.log
+
+# Documents joints envoyés pendant les tests : jamais versionnés.
+/stockage/*
+!/stockage/.gitkeep

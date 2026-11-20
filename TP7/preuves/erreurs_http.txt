@@ -4,6 +4,11 @@ Date : 19/11/2026
 Toutes les requêtes ci-dessous ont été observées dans l'onglet Réseau du navigateur
 (serveur réel http://127.0.0.1:8001, API du TP6 déléguée par public/router.php).
 
+Note (20/11/2026) : ces codes ont été relevés sur la première version de l'interface.
+Dans l'interface finale (app.html), les messages sont affichés dans des notifications
+(voir assets/js/api.js) et le 401 redirige vers index.html?raison=session. Les réponses
+API et les codes HTTP restent identiques.
+
 400 — refus sans motif
 ----------------------
 Requête : PATCH /api/demandes/5/statut  Corps : {"statut":"REFUSEE"}

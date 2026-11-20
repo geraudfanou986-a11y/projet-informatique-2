@@ -1,0 +1,12 @@
+﻿TABLE               ATTENDU     OBTENU RESULTAT
+etudiant                  3          3 OK
+entreprise                2          2 OK
+encadreur                 2          2 OK
+demande_stage             4          4 OK
+soutenance                1          1 OK
+utilisateur               3          3 OK
+historique                0          0 OK
+piece_jointe          libre          0 OK
+
+OK - installation conforme.
+Application : http://127.0.0.1:8000/

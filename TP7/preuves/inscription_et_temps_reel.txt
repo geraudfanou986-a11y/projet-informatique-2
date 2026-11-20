@@ -4,6 +4,10 @@ Date : 19/11/2026
 Serveur : http://127.0.0.1:8001 (serveur PHP lancé depuis VS Code)
 Base : tp7_corrige_test sur MariaDB port 3307
 
+Note (20/11/2026) : dans l'interface finale, l'inscription se fait depuis l'onglet
+« Inscription » de index.html et ouvre directement app.html. La relecture automatique
+(15 s) est conservée, mais suspendue pendant une modale ou une saisie.
+
 1. Inscription d'un visiteur (nouveau)
 --------------------------------------
 Formulaire « Créer un compte » de connexion.html :

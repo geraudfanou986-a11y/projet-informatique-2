@@ -2,82 +2,13 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Espace responsable — TP7</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <meta http-equiv="refresh" content="0; url=app.html">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="app.html">
+  <title>Espace responsable — redirection</title>
 </head>
 <body>
-<header>
-  <div>
-    <h1>Espace responsable — Décisions</h1>
-    <p id="profil-utilisateur" class="profil">Chargement du profil…</p>
-  </div>
-  <nav>
-    <a href="index.html">Accueil</a> ·
-    <a href="scenario.html">Scénario</a> ·
-    <button class="secondaire" id="bouton-deconnexion" type="button">Se déconnecter</button>
-  </nav>
-</header>
-<main>
-  <section class="carte">
-    <h2>Demandes à traiter</h2>
-    <p>Les données sont relues automatiquement depuis la base. Une décision prise ici met immédiatement la liste à jour, et l'onglet étudiant se synchronise aussi.</p>
-    <div class="suivi">
-      <label><input id="auto-responsable" type="checkbox" checked> Actualisation automatique (15 s)</label>
-      <span id="maj-responsable">Chargement…</span>
-      <button class="secondaire" id="bouton-rafraichir" type="button">Rafraîchir maintenant</button>
-    </div>
-    <p id="notification-responsable" class="notification" role="status" hidden></p>
-    <table>
-      <caption>Réponse de GET /api/demandes</caption>
-      <thead>
-        <tr><th>Identifiant</th><th>Étudiant n°</th><th>Entreprise n°</th><th>Statut</th><th>Motif</th><th>Action rapide</th></tr>
-      </thead>
-      <tbody id="corps-tableau-responsable">
-        <tr><td colspan="6" class="vide">Chargement…</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <section class="carte">
-    <h2>Prendre une décision</h2>
-    <form id="formulaire-decision" novalidate>
-      <label for="demande-id">Numéro de demande</label>
-      <input id="demande-id" name="id" type="number" min="1" step="1" required
-             aria-describedby="erreur-demande-id">
-      <p id="erreur-demande-id" class="zone-erreur" role="alert"></p>
-
-      <label for="statut">Décision</label>
-      <select id="statut" name="statut" required aria-describedby="erreur-statut">
-        <option value="">— Choisir —</option>
-        <option value="SOUMISE">Soumettre la demande</option>
-        <option value="VALIDEE">Valider la demande</option>
-        <option value="REFUSEE">Refuser la demande</option>
-      </select>
-      <p id="erreur-statut" class="zone-erreur" role="alert"></p>
-
-      <label for="motif">Motif du refus (obligatoire pour un refus)</label>
-      <textarea id="motif" name="motif" aria-describedby="erreur-motif"></textarea>
-      <p id="erreur-motif" class="zone-erreur" role="alert"></p>
-
-      <div class="actions">
-        <button type="submit">Enregistrer la décision</button>
-      </div>
-    </form>
-    <p id="message-decision" class="zone-succes" role="status"></p>
-    <p id="erreur-decision" class="zone-erreur" role="alert"></p>
-  </section>
-
-  <section class="carte">
-    <h2>Vérification du rendu sécurisé</h2>
-    <p>Le motif saisi est affiché avec <code>textContent</code> : une balise HTML saisie dans le motif ne sera pas exécutée.</p>
-    <ul id="liste-motifs" aria-live="polite"></ul>
-  </section>
-</main>
-<footer>Erreurs lisiblement affichées : 400 près du champ, 401 redirection vers la connexion, 500 message neutre.</footer>
-
-<script src="js/api.js"></script>
-<script src="js/commun.js"></script>
-<script src="js/responsable.js"></script>
+  <p>L’espace responsable fait partie de l’interface unifiée : <a href="app.html">ouvrir mon espace</a>.</p>
+  <script>location.replace('app.html' + location.search);</script>
 </body>
 </html>

@@ -4,73 +4,79 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Parcours des rôles — TP7</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<header>
-  <h1>Parcours des rôles — TP7</h1>
-  <nav><a href="index.html">Accueil</a> · <a href="scenario.html">Scénario de bout en bout</a></nav>
-</header>
-<main>
-  <section class="carte">
-    <h2>Deux parcours dessinés avant le codage</h2>
-    <p>Cette page présente les écrans prévus au chapitre 7. Le schéma visuel est aussi disponible dans le dossier <code>docs/parcours.svg</code> du projet.</p>
-    <div class="actions">
-      <a class="bouton secondaire" href="#etudiant">Parcours étudiant</a>
-      <a class="bouton secondaire" href="#responsable">Parcours responsable</a>
+  <a class="skip-link" href="#contenu-doc">Aller au contenu</a>
+  <div class="contenu" id="contenu-doc" style="padding-top:32px">
+    <div class="page-head">
+      <div>
+        <h2>Parcours des rôles — TP7</h2>
+        <p>Les écrans prévus au chapitre 7, dessinés avant le codage. Schéma complet : <code>docs/parcours.svg</code>.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-ghost" href="index.html">Accueil</a>
+        <a class="btn btn-primary" href="scenario.html">Scénario complet</a>
+      </div>
     </div>
-  </section>
 
-  <section class="carte" id="etudiant">
-    <h2>Parcours étudiant — 4 écrans</h2>
-    <ol class="chemin">
-      <li>Connexion</li>
-      <li>Mes demandes</li>
-      <li>Formulaire de dépôt</li>
-      <li>Détail d'une demande</li>
-    </ol>
-    <table>
-      <caption>Écrans, actions et appels API</caption>
-      <thead><tr><th>Écran</th><th>Action utilisateur</th><th>Appel / résultat</th></tr></thead>
-      <tbody>
-        <tr><td>1. <code>connexion.html</code></td><td>Saisir email + mot de passe, ou créer un compte</td><td><code>POST /api/connexion</code> ou <code>POST /api/inscription</code> → redirection vers <code>etudiant.html</code></td></tr>
-        <tr><td>2. <code>etudiant.html</code> (liste)</td><td>Arrivée sur la page, rafraîchissement automatique toutes les 15 s</td><td><code>GET /api/demandes/mes</code> → tableau des demandes</td></tr>
-        <tr><td>3. <code>etudiant.html</code> (dépôt)</td><td>Choisir une entreprise dans la liste, envoyer</td><td><code>POST /api/demandes</code> → <code>201</code>, puis relecture de la liste</td></tr>
-        <tr><td>4. <code>etudiant.html</code> (détail)</td><td>Cliquer sur « Voir détail »</td><td>Affichage de l'id, de l'entreprise, du statut et du motif avec <code>textContent</code></td></tr>
-      </tbody>
-    </table>
-    <p>Zone transverse : le formulaire de vérification du rendu sécurisé permet de saisir <code>&lt;b&gt;test&lt;/b&gt;</code> et de constater que les balises s'affichent telles quelles, sans être interprétées.</p>
-  </section>
+    <section class="carte" style="margin-bottom:18px">
+      <div class="carte-head"><h3>Deux parcours, une interface unifiée</h3></div>
+      <div class="carte-body">
+        <p>La connexion se fait depuis la page d'accueil. Ensuite, un seul espace (<code>app.html</code>) s'adapte au rôle connecté : tableau de bord, demandes, soutenances, historique et profil. Les anciennes pages <code>connexion.html</code>, <code>etudiant.html</code> et <code>responsable.html</code> sont conservées mais redirigent vers cette interface commune.</p>
+      </div>
+    </section>
 
-  <section class="carte" id="responsable">
-    <h2>Parcours responsable — 3 écrans</h2>
-    <ol class="chemin">
-      <li>Connexion</li>
-      <li>Liste des demandes à traiter</li>
-      <li>Décision : soumettre / valider / refuser</li>
-    </ol>
-    <table>
-      <caption>Écrans, actions et appels API</caption>
-      <thead><tr><th>Écran</th><th>Action utilisateur</th><th>Appel / résultat</th></tr></thead>
-      <tbody>
-        <tr><td>1. <code>connexion.html</code></td><td>Saisir les identifiants responsable</td><td><code>POST /api/connexion</code> → redirection vers <code>responsable.html</code></td></tr>
-        <tr><td>2. <code>responsable.html</code> (liste)</td><td>Arrivée, clic sur « Rafraîchir » ou actualisation automatique</td><td><code>GET /api/demandes</code> → tableau reçu de la base</td></tr>
-        <tr><td>3. <code>responsable.html</code> (décision)</td><td>Choisir un statut, saisir un motif si refus, enregistrer</td><td><code>PATCH /api/demandes/{id}/statut</code> → <code>200</code>, puis relecture immédiate de la liste</td></tr>
-      </tbody>
-    </table>
-    <p>La transition suit l'ordre métier : <code>BROUILLON → SOUMISE → VALIDEE</code>. Un refus sans motif renvoie <code>400</code> et le message s'affiche sous le champ prévu à cet effet.</p>
-  </section>
+    <section class="carte" style="margin-bottom:18px" id="etudiant">
+      <div class="carte-head"><h3>Parcours étudiant</h3><span class="sous">Connexion → dépôt → soumission → suivi</span></div>
+      <div class="carte-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Étape dans l'interface</th><th>Action utilisateur</th><th>Appel API / résultat</th></tr></thead>
+            <tbody>
+              <tr><td><span class="cellule-forte">1. Connexion</span></td><td>Compte de démonstration ou inscription</td><td><code>POST /api/connexion</code> ou <code>/api/inscription</code> → ouverture de <code>app.html</code></td></tr>
+              <tr><td><span class="cellule-forte">2. Tableau de bord</span></td><td>Lecture des compteurs et des cartes</td><td><code>GET /api/demandes/mes</code>, <code>/api/soutenances</code></td></tr>
+              <tr><td><span class="cellule-forte">3. Nouvelle demande</span></td><td>Choisir une entreprise dans la modale</td><td><code>POST /api/demandes</code> → <code>201</code>, statut <code>BROUILLON</code></td></tr>
+              <tr><td><span class="cellule-forte">4. Soumettre</span></td><td>Bouton « Soumettre » sur sa propre carte</td><td><code>PATCH /api/demandes/{id}/statut</code> → <code>SOUMISE</code></td></tr>
+              <tr><td><span class="cellule-forte">5. Détail / Historique</span></td><td>Ouvrir les modales dédiées</td><td><code>GET /api/demandes/{id}/historique</code> (jeton CSRF + droit sur la demande)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Toutes les valeurs affichées passent par <code>textContent</code> : un motif contenant <code>&lt;script&gt;alert(1)&lt;/script&gt;</code> s'affiche comme du texte, sans créer de balise ni exécuter de code (voir <code>preuves/test_balises.txt</code>).</p>
+      </div>
+    </section>
 
-  <section class="carte">
-    <h2>Choix d'interface</h2>
-    <ul>
-      <li>Une seule page par rôle, avec des sections correspondant aux écrans du parcours : moins d'allers-retours, mais des sections clairement titrées.</li>
-      <li>Un bouton « Rafraîchir » explicite, complété par une actualisation automatique : les données affichées reviennent toujours de la base.</li>
-      <li>Aucun lien direct vers les routes API : tout passe par <code>fetch</code> dans <code>public/js/api.js</code>.</li>
-    </ul>
-    <p><a class="bouton" href="connexion.html">Mettre en pratique</a></p>
-  </section>
-</main>
-<footer>Données fictives uniquement · TP7 · L3 SIL</footer>
+    <section class="carte" style="margin-bottom:18px" id="responsable">
+      <div class="carte-head"><h3>Parcours responsable</h3><span class="sous">Connexion → décision → soutenance → journal</span></div>
+      <div class="carte-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Étape dans l'interface</th><th>Action utilisateur</th><th>Appel API / résultat</th></tr></thead>
+            <tbody>
+              <tr><td><span class="cellule-forte">1. Connexion</span></td><td>Compte responsable depuis l'accueil</td><td><code>POST /api/connexion</code> → rôle <code>responsable</code></td></tr>
+              <tr><td><span class="cellule-forte">2. Toutes les demandes</span></td><td>Recherche, filtres, bouton « Actualiser »</td><td><code>GET /api/demandes</code> → tableau complet avec noms et entreprises</td></tr>
+              <tr><td><span class="cellule-forte">3. Décision</span></td><td>« Valider » ou « Refuser » (motif obligatoire)</td><td><code>PATCH /api/demandes/{id}/statut</code> → <code>200</code>, relecture immédiate</td></tr>
+              <tr><td><span class="cellule-forte">4. Soutenance</span></td><td>Programmer une date et une salle</td><td><code>PATCH /api/demandes/{id}/soutenance</code> → agenda mis à jour</td></tr>
+              <tr><td><span class="cellule-forte">5. Historique</span></td><td>Ouvrir le journal d'une demande</td><td><code>GET /api/demandes/{id}/historique</code> → auteurs et horodatages</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>La transition suit l'ordre métier : <code>BROUILLON → SOUMISE → VALIDEE</code>. Un refus sans motif renvoie <code>400</code> ; le message s'affiche dans une notification lisible, sans page blanche.</p>
+      </div>
+    </section>
+
+    <section class="carte">
+      <div class="carte-head"><h3>Choix d'interface</h3></div>
+      <div class="carte-body">
+        <ul>
+          <li>Une coque commune et des vues clairement titrées, au lieu d'une page séparée par rôle : moins d'allers-retours, un rendu homogène.</li>
+          <li>Un bouton « Actualiser » explicite, complété par une relecture automatique toutes les 15 s lorsqu'aucune modale n'est ouverte et qu'aucun champ n'a le focus.</li>
+          <li>Aucun lien direct vers les routes API : tout passe par <code>fetch</code> dans <code>assets/js/api.js</code> (session, CSRF, erreurs 400/401/500).</li>
+        </ul>
+        <p><a class="btn btn-primary" href="index.html">Mettre en pratique</a></p>
+      </div>
+    </section>
+  </div>
 </body>
 </html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plateforme de gestion des stages : dépôt de demandes, validation et programmation des soutenances.">
+  <title>Stageflow — Gestion des stages</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="auth-page">
+  <a class="skip-link" href="#contenu-connexion">Aller au formulaire de connexion</a>
+
+  <section class="auth-hero" aria-label="Présentation de la plateforme">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7h18v13H3zM8 7V4h8v3M3 12h18"/>
+        </svg>
+      </span>
+      Stageflow
+    </a>
+
+    <div class="hero-content">
+      <span class="hero-kicker">✦ Plateforme de gestion des stages</span>
+      <h1>Vos stages,<br><em>enfin sous contrôle.</em></h1>
+      <p class="lead">Du premier dépôt à la soutenance, suivez chaque dossier en temps réel, avec des règles métier claires et un accès strictement contrôlé.</p>
+      <ul class="hero-features">
+        <li>
+          <span class="fi" aria-hidden="true">⚡</span>
+          <span><strong>Un parcours fluide</strong><span>Déposez, soumettez et suivez votre demande en quelques clics.</span></span>
+        </li>
+        <li>
+          <span class="fi" aria-hidden="true">🛡️</span>
+          <span><strong>Des accès maîtrisés</strong><span>Chaque rôle ne voit que ce qu'il a le droit de voir.</span></span>
+        </li>
+        <li>
+          <span class="fi" aria-hidden="true">📅</span>
+          <span><strong>Une vue d'ensemble</strong><span>Statuts, décisions et soutenances réunis au même endroit.</span></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="hero-foot">
+      <div><b>3</b> rôles utilisateurs</div>
+      <div><b>16</b> routes sécurisées</div>
+      <div><b>32</b> tests exécutés</div>
+      <div>Données fictives · projet pédagogique</div>
+    </div>
+  </section>
+
+  <main class="auth-panel" id="contenu-connexion">
+    <div class="auth-card">
+      <h2>Bienvenue</h2>
+      <p class="sous-titre">Connectez-vous pour accéder à votre espace.</p>
+
+      <div class="tabs" role="tablist" aria-label="Connexion ou inscription">
+        <button class="tab" type="button" role="tab" id="tab-connexion" data-panneau="connexion" aria-controls="panneau-connexion" aria-selected="true">Connexion</button>
+        <button class="tab" type="button" role="tab" id="tab-inscription" data-panneau="inscription" aria-controls="panneau-inscription" aria-selected="false" tabindex="-1">Inscription</button>
+      </div>
+
+      <div id="erreur-form" class="erreur-form" role="alert"></div>
+
+      <div class="panneau" id="panneau-connexion" role="tabpanel" aria-labelledby="tab-connexion">
+        <form id="form-connexion" novalidate>
+          <div class="champ">
+            <label for="co-email">Adresse e-mail</label>
+            <input id="co-email" name="email" type="email" autocomplete="username" placeholder="prenom.nom@univ.test" required>
+          </div>
+          <div class="champ">
+            <label for="co-mot-de-passe">Mot de passe</label>
+            <input id="co-mot-de-passe" name="motDePasse" type="password" autocomplete="current-password" placeholder="Votre mot de passe" required>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Se connecter <span aria-hidden="true">→</span></button>
+        </form>
+
+        <div class="separateur">ou essayer un compte de démonstration</div>
+        <div class="comptes">
+          <button class="compte" type="button" data-email="koffi.adjovi@univ.test" data-mot-de-passe="Etudiant123!">
+            <span class="avatar" aria-hidden="true">KA</span>
+            <span><strong>Koffi Adjovi</strong><small>Étudiant · déposer et suivre</small></span>
+            <span class="fleche" aria-hidden="true">›</span>
+          </button>
+          <button class="compte" type="button" data-email="sylvie.hounkpe@univ.test" data-mot-de-passe="Responsable123!">
+            <span class="avatar resp" aria-hidden="true">SH</span>
+            <span><strong>Sylvie Hounkpé</strong><small>Responsable · valider et programmer</small></span>
+            <span class="fleche" aria-hidden="true">›</span>
+          </button>
+          <button class="compte" type="button" data-email="jean.akpo@univ.test" data-mot-de-passe="Secretariat123!">
+            <span class="avatar sec" aria-hidden="true">JA</span>
+            <span><strong>Jean Akpo</strong><small>Secrétariat · agenda des soutenances</small></span>
+            <span class="fleche" aria-hidden="true">›</span>
+          </button>
+        </div>
+        <p class="notice">Comptes fictifs — données pédagogiques uniquement.</p>
+      </div>
+
+      <div class="panneau" id="panneau-inscription" role="tabpanel" aria-labelledby="tab-inscription" hidden>
+        <form id="form-inscription" novalidate>
+          <div class="champ">
+            <label for="in-nom">Nom</label>
+            <input id="in-nom" type="text" autocomplete="family-name" placeholder="ADJOVI" required maxlength="60">
+          </div>
+          <div class="champ">
+            <label for="in-prenom">Prénom</label>
+            <input id="in-prenom" type="text" autocomplete="given-name" placeholder="Koffi" required maxlength="60">
+          </div>
+          <div class="champ">
+            <label for="in-email">Adresse e-mail</label>
+            <input id="in-email" type="email" autocomplete="email" placeholder="prenom.nom@univ.test" required>
+          </div>
+          <div class="champ">
+            <label for="in-role">Profil</label>
+            <select id="in-role">
+              <option value="etudiant">Étudiant</option>
+              <option value="responsable">Responsable</option>
+            </select>
+          </div>
+          <div class="champ">
+            <label for="in-mot-de-passe">Mot de passe</label>
+            <input id="in-mot-de-passe" type="password" autocomplete="new-password" placeholder="8 caractères minimum" required minlength="8">
+            <span class="aide">Au moins 8 caractères.</span>
+          </div>
+          <div class="champ">
+            <label for="in-confirmation">Confirmer le mot de passe</label>
+            <input id="in-confirmation" type="password" autocomplete="new-password" required minlength="8">
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Créer mon compte</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>

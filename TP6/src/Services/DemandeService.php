@@ -36,6 +36,36 @@ final class DemandeService
         return $this->repository->findByStudent($etudiantId);
     }
 
+    public function etudiants(): array
+    {
+        return $this->repository->listerEtudiants();
+    }
+
+    /**
+     * Agenda des soutenances. Un étudiant ne voit que les siennes ; le personnel voit tout.
+     */
+    public function soutenances(array $utilisateur): array
+    {
+        $toutes = $this->repository->listerSoutenances();
+        if (in_array((string) ($utilisateur['role'] ?? ''), ['responsable', 'secretariat'], true)) {
+            return $toutes;
+        }
+        $etudiantId = (int) ($utilisateur['etudiant_id'] ?? 0);
+
+        return array_values(array_filter(
+            $toutes,
+            static fn(array $s): bool => (int) $s['etudiant_id'] === $etudiantId
+        ));
+    }
+
+    /** Le contrôle d'accès est réutilisé : même règle que le détail d'une demande. */
+    public function historique(int $id, array $utilisateur): array
+    {
+        $this->detail($id, $utilisateur);
+
+        return $this->repository->historiquePour($id);
+    }
+
     /**
      * Détail d'une demande, avec contrôle d'accès côté serveur.
      * Un étudiant ne lit que ses propres demandes (403 sinon) ; le personnel lit tout.
@@ -77,8 +107,29 @@ final class DemandeService
      * Validation en transaction : UPDATE du statut puis INSERT de l'historique.
      * Si l'INSERT échoue, le rollback annule aussi le UPDATE (tout ou rien).
      */
-    public function changerStatut(int $id, mixed $statut, mixed $motif, ?int $utilisateurId): array
-    {
+    public function changerStatut(
+        int $id,
+        mixed $statut,
+        mixed $motif,
+        ?int $utilisateurId,
+        ?array $utilisateur = null
+    ): array {
+        // Un étudiant ne peut que SOUMETTRE son propre brouillon : les décisions
+        // (VALIDEE/REFUSEE) restent réservées au responsable.
+        $role = (string) ($utilisateur['role'] ?? '');
+        if ($utilisateur !== null && !in_array($role, ['etudiant', 'responsable'], true)) {
+            throw new HttpException(403, 'Accès interdit');
+        }
+        if ($utilisateur !== null && $role === 'etudiant') {
+            if ($statut !== 'SOUMISE') {
+                throw new HttpException(403, 'Un étudiant ne peut que soumettre sa propre demande');
+            }
+            $demande = $this->detail($id, $utilisateur); // 403 si ce n'est pas la sienne
+            if (($demande['statut'] ?? '') !== 'BROUILLON') {
+                throw new HttpException(409, 'Transition interdite');
+            }
+        }
+
         if (!is_string($statut) || !isset(self::TRANSITIONS[$statut])) {
             throw new HttpException(400, 'Statut invalide');
         }

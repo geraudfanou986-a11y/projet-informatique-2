@@ -52,6 +52,12 @@ try {
     if ($methode === 'GET' && $chemin === '/api/entreprises') {
         $controller->entreprises();
     }
+    if ($methode === 'GET' && $chemin === '/api/etudiants') {
+        $controller->etudiants();
+    }
+    if ($methode === 'GET' && $chemin === '/api/soutenances') {
+        $controller->soutenances();
+    }
     if ($methode === 'POST' && $chemin === '/api/deconnexion') {
         exigerCsrf();
         $authController->deconnexion();
@@ -64,6 +70,9 @@ try {
     }
     if (preg_match('#^/api/demandes/(\d+)$#', $chemin, $m) === 1 && $methode === 'GET') {
         $controller->detail((int) $m[1]);
+    }
+    if (preg_match('#^/api/demandes/(\d+)/historique$#', $chemin, $m) === 1 && $methode === 'GET') {
+        $controller->historique((int) $m[1]);
     }
     if ($methode === 'POST' && $chemin === '/api/demandes') {
         exigerCsrf();

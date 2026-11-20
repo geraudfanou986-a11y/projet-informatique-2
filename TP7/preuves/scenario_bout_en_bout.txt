@@ -4,6 +4,10 @@ Date : 19/11/2026
 Base de test dédiée : tp7_corrige_test (supprimée après vérification)
 Serveur : php -S 127.0.0.1:8001 -t TP7/public TP7/public/router.php
 
+Note (20/11/2026) : scénario rejoué sur l'interface finale. Les pages etudiant.html et
+responsable.html redirigent désormais vers app.html ; les appels API et les statuts
+restent identiques. Voir docs/scenario_bout_en_bout.md et public/scenario.html.
+
 Étape 1 — Connexion étudiant
 ----------------------------
 POST /api/connexion  {"email":"koffi.adjovi@univ.test","motDePasse":"Etudiant123!"}

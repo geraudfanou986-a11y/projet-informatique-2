@@ -35,6 +35,27 @@ final class DemandeController
         repondre(200, $this->service->listerPourEtudiant($u['etudiant_id']));
     }
 
+    /** Noms des étudiants pour l'affichage (utilisateur authentifié). */
+    public function etudiants(): never
+    {
+        $this->auth->utilisateur();
+        repondre(200, $this->service->etudiants());
+    }
+
+    /** Agenda des soutenances, filtré selon le rôle dans le service. */
+    public function soutenances(): never
+    {
+        $u = $this->auth->utilisateur();
+        repondre(200, $this->service->soutenances($u));
+    }
+
+    /** Journal des décisions d'une demande (contrôle d'accès dans le service). */
+    public function historique(int $id): never
+    {
+        $u = $this->auth->utilisateur();
+        repondre(200, $this->service->historique($id, $u));
+    }
+
     /** Détail d'une demande : le service applique le contrôle d'accès par rôle. */
     public function detail(int $id): never
     {
@@ -72,13 +93,16 @@ final class DemandeController
 
     public function changerStatut(int $id): never
     {
-        $u = $this->auth->exigeRole(['responsable']);
+        // Le service distingue ensuite les rôles : un étudiant peut uniquement
+        // soumettre sa propre demande, le responsable décide (valider/refuser).
+        $u = $this->auth->utilisateur();
         $corps = lireCorps();
         $resultat = $this->service->changerStatut(
             $id,
             $corps['statut'] ?? null,
             $corps['motif'] ?? null,
-            $u['id']
+            $u['id'],
+            $u
         );
         repondre(200, $resultat);
     }
