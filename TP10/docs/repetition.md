@@ -22,8 +22,8 @@ en minute 1-3 si le `201` suffit). Les cinq séquences imposées restent toutes 
 ## Protocole de la dernière répétition
 
 1. Ouvrir **avant** de lancer le chronomètre : les deux navigateurs connectés, le
-   terminal avec `php -S 127.0.0.1:8001 -t TP7/public TP7/public/router.php`, la base
-   de test `tp7_corrige_test`, `TP8/preuves/resultats_tests.txt` et la solution de repli.
+   terminal avec `php -S 127.0.0.1:8001 -t TP07/public TP07/public/router.php`, la base
+   de test `tp7_corrige_test`, `TP08/preuves/resultats_tests.txt` et la solution de repli.
 2. Lancer le chronomètre au premier mot de la phrase d'introduction.
 3. Arrêter au dernier mot de la conclusion, pas à la fermeture des onglets.
 4. Noter les temps dans la grille ci-dessus ; refaire une seule répétition complète
@@ -39,11 +39,11 @@ continue **sans requête en direct**, dans cet ordre :
 
 | Preuve de repli | Fichier à ouvrir |
 |---|---|
-| Page de santé `200` | `TP4/` (compte rendu du test de la route) |
-| Demande créée et statut `VALIDEE`, soutenance programmée | `TP8/preuves/resultats_tests.txt` (cas 9, 16, 19) |
-| Refus `403` et `404` sur l'injection | `TP8/preuves/resultats_tests.txt` (cas 21, 27) et `TP8/docs/cas_limites.md` |
-| Matrice complète | `TP8/preuves/resultats_tests.json`, à filtrer avec `'cas': 14` à `21` |
-| Installation et sauvegarde | `TP9/preuves/sante_http.txt`, `TP9/preuves/avant.json`, `TP9/preuves/apres.json` |
+| Page de santé `200` | `TP04/` (compte rendu du test de la route) |
+| Demande créée et statut `VALIDEE`, soutenance programmée | `TP08/preuves/resultats_tests.txt` (cas 9, 16, 19) |
+| Refus `403` et `404` sur l'injection | `TP08/preuves/resultats_tests.txt` (cas 21, 27) et `TP08/docs/cas_limites.md` |
+| Matrice complète | `TP08/preuves/resultats_tests.json`, à filtrer avec `'cas': 14` à `21` |
+| Installation et sauvegarde | `TP09/preuves/sante_http.txt`, `TP09/preuves/avant.json`, `TP09/preuves/apres.json` |
 
 Ces fichiers sont versionnés : ils restent consultables même si le poste de démonstration
 est remplacé par un autre. Une capture d'écran de la séquence 1-3 peut être ajoutée dans

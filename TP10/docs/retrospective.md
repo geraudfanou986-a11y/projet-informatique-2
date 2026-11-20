@@ -5,7 +5,7 @@ soutenance par les trois membres.
 
 ## Qu'est-ce qui a bien fonctionné ?
 
-**La matrice de tests exécutée, pas seulement écrite.** Le script `TP8/scripts/tests_tp8.php`
+**La matrice de tests exécutée, pas seulement écrite.** Le script `TP08/scripts/tests_tp8.php`
 envoie de vraies requêtes HTTP avec une session par rôle et écrit 32 résultats horodatés
 dans `preuves/resultats_tests.txt` et `.json`. Le premier passage a donné 30/32 : au
 lieu d'ajuster l'attendu, nous avons corrigé le vrai défaut (`utilisateur.id` au lieu
@@ -20,7 +20,7 @@ utilisateur était utilisé pour retrouver la fiche étudiant. Le diagnostic a d
 suivre la session HTTP complète (deux navigateurs, deux `PHPSESSID`) puis de comparer
 les identifiants en base. La leçon : tester avec **deux vrais rôles distincts**, pas
 seulement avec un compte administrateur. Le déploiement a aussi réservé une surprise
-avec `mysqldump` et le compte limité (`TP9/docs/incident.md`).
+avec `mysqldump` et le compte limité (`TP09/docs/incident.md`).
 
 ## Que change-t-on pour la version 2 ?
 

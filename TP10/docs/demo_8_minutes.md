@@ -3,7 +3,7 @@
 Ordre imposé par le cours (section 10.2) : contexte → dépôt → validation et
 programmation → contrôle d'accès → tests et bilan. Les données sont fictives
 (`@univ.test`) et préparées à l'avance. Le serveur utilisé est celui du poste
-principal : `http://127.0.0.1:8001` (interface TP7 + API TP6).
+principal : `http://127.0.0.1:8001` (interface TP07 + API TP06).
 
 Comptes de démonstration :
 
@@ -24,7 +24,7 @@ Comptes de démonstration :
 | **1-3** | Dépôt d'une demande | Se connecter en tant que A. Récupérer `GET /api/csrf`, puis `POST /api/demandes {"entrepriseId":1}` avec l'en-tête `X-CSRF-Token`. | **Ligne créée en base** : `HTTP 201 {"statut":"BROUILLON"}`, puis `SELECT COUNT(*) FROM demande_stage` avant/après dans `phpMyAdmin` (4 → 5). |
 | **3-5** | Validation et programmation | A soumet (`PATCH .../statut {"statut":"SOUMISE"}`). Le responsable valide (`VALIDEE`) puis programme `PATCH .../soutenance {"date_heure":"2026-12-11 10:00:00","salle":"B12"}`. | **Statut et soutenance** : `HTTP 200 {"statut":"VALIDEE"}` puis `{"date_heure":"2026-12-11 10:00:00","salle":"B12"}` ; ligne visible dans `soutenance`. |
 | **5-6** | Contrôle d'accès | Dans le second navigateur, se connecter en tant que B et appeler `GET /api/demandes/{id de A}`. Enchaîner avec `GET /api/demandes/1 OR 1=1`. | **Réponse 403** sans aucune donnée (`{"erreur":"Acces interdit"}`), puis **404** sur l'injection (`{"erreur":"Route inconnue"}`). |
-| **6-8** | Tests et bilan | Ouvrir `TP8/docs/matrice_tests.md` et `TP8/preuves/resultats_tests.txt`. Montrer un hash bcrypt en base. | **Matrice de tests** : 32/32 conformes, quatre cas limites T-01 à T-04, hash `$2y$…` et jeton CSRF de 64 caractères. |
+| **6-8** | Tests et bilan | Ouvrir `TP08/docs/matrice_tests.md` et `TP08/preuves/resultats_tests.txt`. Montrer un hash bcrypt en base. | **Matrice de tests** : 32/32 conformes, quatre cas limites T-01 à T-04, hash `$2y$…` et jeton CSRF de 64 caractères. |
 
 ## Phrases d'introduction (à dire, pas à lire)
 

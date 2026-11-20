@@ -1,0 +1,12 @@
+# Les dossiers TP3 a TP9 ont ete renommes TP03 a TP09 pour que TP10
+# apparaisse apres TP9 dans la liste alphabetique de GitHub.
+# Les anciens noms restent sur cette machine sous forme de jonctions
+# (pour ne pas interrompre les serveurs de test 8001 et 8002) :
+# ils ne doivent pas etre versions.
+/TP3/
+/TP4/
+/TP5/
+/TP6/
+/TP7/
+/TP8/
+/TP9/

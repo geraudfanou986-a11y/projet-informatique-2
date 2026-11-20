@@ -1,0 +1,58 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "TP07 : préparer la base de test",
+      "type": "process",
+      "command": "php",
+      "args": ["${workspaceFolder}/TP07/scripts/preparer_base.php"],
+      "options": {
+        "env": {
+          "DB_PORT": "3307",
+          "DB_PASS": ""
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "TP07 : lancer l'interface + l'API",
+      "type": "process",
+      "command": "php",
+      "args": [
+        "-S", "127.0.0.1:8001",
+        "-t", "${workspaceFolder}/TP07/public",
+        "${workspaceFolder}/TP07/public/router.php"
+      ],
+      "isBackground": true,
+      "options": {
+        "env": {
+          "DB_PORT": "3307",
+          "DB_NAME": "tp7_corrige_test",
+          "DB_USER": "root",
+          "DB_PASS": ""
+        }
+      },
+      "problemMatcher": {
+        "owner": "php-server",
+        "pattern": {
+          "regexp": "^(.*)$",
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Development Server",
+          "endsPattern": "started"
+        }
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Development Server \\(http://([^)]+)\\) started",
+        "uriFormatString": "http://$1/"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
