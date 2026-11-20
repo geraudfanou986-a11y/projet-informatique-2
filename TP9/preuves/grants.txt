@@ -1,0 +1,11 @@
+Privilèges effectifs du compte dédié (SHOW GRANTS FOR 'stages_deploiement'@'127.0.0.1')
+
+GRANT USAGE ON *.* TO `stages_deploiement`@`127.0.0.1` IDENTIFIED BY PASSWORD '*6412D604A761FE2704F2D5E3734BA025696ADCEC'
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `tp9_deploiement_test`.* TO `stages_deploiement`@`127.0.0.1`
+
+Vérification complémentaire :
+- CREATE TABLE IF NOT EXISTS test_acces (id INT) -> OK
+- DROP TABLE test_acces -> OK
+- Connexion à tp7_corrige_test -> refusée (voir restriction.txt)
+
+Conclusion : aucun privilège global, aucun accès aux autres bases, pas de LOCK TABLES.

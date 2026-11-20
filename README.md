@@ -23,6 +23,8 @@ soutenances (données fictives uniquement).
 | `TP6/` | API réelle des demandes : contrôleurs, services, repositories, authentification et preuves HTTP |
 | `TP7/` | Interface accessible reliée à l'API, parcours des rôles, test XSS et scénario de bout en bout |
 | `TP8/` | Plan de tests exécuté, quatre cas limites, audit de sécurité (hachage, CSRF) et fiche de revue de code |
+| `TP9/` | Déploiement sur un second poste, compte SQL dédié, sauvegarde restaurée et ticket d'incident |
+| `TP10/` | Dossier de livraison (liste de contrôle), scénario de démonstration, questions individuelles et rétrospective |
 
 ## Branches
 
@@ -31,7 +33,7 @@ fusionnées après relecture du diff. Les livrables actuellement présents sont 
 
 | Branche | Contenu |
 |---|---|
-| `main` | Squelette du dépôt et livrables `TD1`, `TD2`, `TP3`, `TP4`, `TP5`, `TP6`, `TP7`, `TP8` |
+| `main` | Squelette du dépôt et livrables `TD1`, `TD2`, `TP3` à `TP10` |
 
 ## Périmètre retenu (v1)
 
@@ -54,8 +56,8 @@ convention signée électroniquement, messagerie interne.
 | TP6 | API des demandes | Fait |
 | TP7 | Interface et intégration | Fait |
 | TP8 | Plan de tests et audit de sécurité | Fait |
-| TP9 | Déploiement et sauvegarde | À venir |
-| TP10 | Dossier de livraison et soutenance | À venir |
+| TP9 | Déploiement et sauvegarde | Fait |
+| TP10 | Dossier de livraison et soutenance | Supports prêts (soutenance orale à tenir) |
 
 ## Démarrage rapide
 
@@ -72,3 +74,17 @@ curl -i http://localhost:8000/api/sante
 # Interface + API sur un seul port (TP7)
 cd TP7 && php -S 127.0.0.1:8001 -t public public/router.php
 ```
+
+> Les commandes `mysql -u root` ci-dessus ne servent qu'à créer la base initialement.
+> L'application ne doit **jamais** utiliser `root` : créer le compte dédié avec
+> `TP9/sql/00_utilisateur.sql`, copier `TP9/config/.env.exemple` vers `TP6/.env`, puis
+> importer les scripts avec ce compte. Sur l'environnement du cours, le port MariaDB
+> est `3307`. Le `TP6/.env` est obligatoire même si l'on ne démarre que TP7 (le routeur
+> TP7 délègue `/api/*` à l'API TP6).
+
+## Déploiement et livraison
+
+- **TP9** : procédure complète de déploiement sur un second poste, compte SQL limité,
+  sauvegarde restaurée et incident `mysqldump` documenté → `TP9/README.md`.
+- **TP10** : liste de contrôle des huit éléments du dossier, démonstration de huit
+  minutes, justifications, questions individuelles et rétrospective → `TP10/README.md`.

@@ -1,0 +1,15 @@
+Commande défaillante :
+mysqldump -h 127.0.0.1 -P 3307 -u stages_deploiement -pDeploiement123! --databases tp9_deploiement_test --add-drop-database
+
+Message brut (stderr) :
+mysqldump.exe: Got error: 1044: "Access denied for user 'stages_deploiement'@'127.0.0.1' to database
+'tp9_deploiement_test'" when using LOCK TABLES
+
+Code de sortie : 2
+Fichier produit : 2228 octets (en-tête uniquement, aucune table)
+
+Commande corrective :
+mysqldump -h 127.0.0.1 -P 3307 -u stages_deploiement -pDeploiement123! --single-transaction --skip-add-locks --databases tp9_deploiement_test --add-drop-database --routines --triggers
+
+Code de sortie : 0 — fichier complet de 17254 octets.
+Voir TP9/docs/incident.md pour l'analyse complète.

@@ -1,0 +1,10 @@
+Import sur le second poste, base tp9_deploiement_test, compte stages_deploiement
+(hôte 127.0.0.1, port 3307).
+
+OK  TP3/001_schema.sql
+OK  TP3/002_seed.sql
+OK  TP6/sql/01_complements.sql
+
+Tables présentes après import (7) :
+demande_stage (4), encadreur (2), entreprise (2), etudiant (3),
+historique (0), soutenance (1), utilisateur (3).

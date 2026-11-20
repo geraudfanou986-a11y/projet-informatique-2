@@ -1,0 +1,8 @@
+﻿f2b6366 (HEAD -> main, origin/main) Ajoute le TP8 (plan de tests et audit de securite)
+c881a09 Met a jour le README avec les TP5, TP6 et TP7
+bd3c760 Ajoute les TP5, TP6 et TP7
+543ac04 Retire le numero du groupe du README
+02ee0cd Ajoute le README racine du projet
+2463f76 Ajoute le TP4 : squelette technique, contrat d'API et ADR-001
+9cf601f Ajoute le TP3 : mod├¿le UML et sch├®ma SQL
+8919e7c Ajout des TD1 et TD2

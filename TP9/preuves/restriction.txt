@@ -1,0 +1,1 @@
+OK : accès refusé sur une autre base -> SQLSTATE[HY000] [1044] Access denied for user 'stages_deploiement'@'127.0.0.1' to database 'tp7_corrige_test'

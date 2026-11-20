@@ -1,0 +1,12 @@
+Second poste — serveur http://127.0.0.1:8002 (interface TP7 + API TP6)
+
+Requête : GET http://127.0.0.1:8002/api/sante
+
+Réponse observée :
+HTTP 200 {"statut":"ok","base":"joignable"}
+
+Interprétation : la route /api/sante est déléguée à TP6/public/index.php par
+TP7/public/router.php ; un code 200 signifie que la connexion PDO à
+tp9_deploiement_test a réussi avec le compte stages_deploiement défini dans TP6/.env.
+
+Le serveur du poste principal (127.0.0.1:8001) est resté actif pendant l'essai.

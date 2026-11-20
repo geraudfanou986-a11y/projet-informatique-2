@@ -1,0 +1,13 @@
+{
+    "etat": "avant",
+    "base": "tp9_deploiement_test",
+    "tables": {
+        "demande_stage": 4,
+        "encadreur": 2,
+        "entreprise": 2,
+        "etudiant": 3,
+        "historique": 0,
+        "soutenance": 1,
+        "utilisateur": 3
+    }
+}

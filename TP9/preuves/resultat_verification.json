@@ -1,0 +1,40 @@
+{
+    "url": "http:\/\/127.0.0.1:8002",
+    "controles": [
+        {
+            "controle": "Page de santé",
+            "resultat": "OK",
+            "detail": "HTTP 200 — {\"statut\":\"ok\",\"base\":\"joignable\"}"
+        },
+        {
+            "controle": "Compte non-root",
+            "resultat": "OK",
+            "detail": "DB_USER = stages_deploiement"
+        },
+        {
+            "controle": "Connexion PDO",
+            "resultat": "OK",
+            "detail": "Base tp9_deploiement_test sur 127.0.0.1:3307"
+        },
+        {
+            "controle": "Relevé des tables",
+            "resultat": "OK",
+            "detail": "7 table(s) : demande_stage, encadreur, entreprise, etudiant, historique, soutenance, utilisateur"
+        },
+        {
+            "controle": "Périmètre du compte",
+            "resultat": "OK",
+            "detail": "Accès refusé à tp7_corrige_test — SQLSTATE[HY000] [1044] Access denied for user 'stages_deploiement'@'127.0.0.1' to database 'tp7_corrige_test'"
+        }
+    ],
+    "counts": {
+        "demande_stage": 4,
+        "encadreur": 2,
+        "entreprise": 2,
+        "etudiant": 3,
+        "historique": 0,
+        "soutenance": 1,
+        "utilisateur": 3
+    },
+    "conforme": true
+}
